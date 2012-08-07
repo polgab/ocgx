@@ -31,129 +31,129 @@
 
 \ifdefined\newcommand
   % LaTeX
-  \def\ocg@page{\thepage}
-  \def\ocg@error{\PackageError{newocg}}
+  \def\ocgx@page{\thepage}
+  \def\ocgx@error{\PackageError{newocg}}
   \RequirePackage{ifpdf}
 \else
   % TeX
-  \def\ocg@page{\the\pageno}
-  \def\ocg@error#1{\errmessage{Package newocg error: #1}}
+  \def\ocgx@page{\the\pageno}
+  \def\ocgx@error#1{\errmessage{Package newocg error: #1}}
   \input ifpdf.sty
 \fi
 
 
 % testing for PDF mode
 \unless\ifpdf
-   \ocg@error{*TeX is not running in PDF mode}%
+   \ocgx@error{*TeX is not running in PDF mode}%
 \fi
 
 % testing for correct pdfTeX version
 \ifnum\pdftexversion<120
-   \ocg@error{pdfeTeX, version >= 1.20, required}
+   \ocgx@error{pdfeTeX, version >= 1.20, required}
 \fi
 
-\def\ocg@store#1#2{%
-  \unless\ifcsname ocg@page:#2\endcsname
-    \expandafter\def\csname ocg@page:#2\endcsname{}%
+\def\ocgx@store#1#2{%
+  \unless\ifcsname ocgx@page:#2\endcsname
+    \expandafter\def\csname ocgx@page:#2\endcsname{}%
   \fi
-  \expandafter\edef\csname ocg@page:#2\endcsname{\csname ocg@page:#2\endcsname#1}%
+  \expandafter\edef\csname ocgx@page:#2\endcsname{\csname ocgx@page:#2\endcsname#1}%
   }
 
-\newread\ocg@read
-\openin\ocg@read=\jobname.ocg
-\unless\ifeof\ocg@read
+\newread\ocgx@read
+\openin\ocgx@read=\jobname.ocg
+\unless\ifeof\ocgx@read
   \input \jobname.ocg
 \fi
-\closein\ocg@read
+\closein\ocgx@read
 
-\newwrite\ocg@write
-\immediate\openout\ocg@write=\jobname.ocg
-\def\ocg@writeocg#1{%
-  \edef\ocg@temp{\noexpand\noexpand\noexpand\ocg@store{#1}}%
-  \write\ocg@write\expandafter{\ocg@temp{\ocg@page}}%
+\newwrite\ocgx@write
+\immediate\openout\ocgx@write=\jobname.ocg
+\def\ocgx@writeocg#1{%
+  \edef\ocgx@temp{\noexpand\noexpand\noexpand\ocgx@store{#1}}%
+  \write\ocgx@write\expandafter{\ocgx@temp{\ocgx@page}}%
   }
 
-\def\ocg@spacecs{ }
+\def\ocgx@spacecs{ }
 
-\def\ocg@list{}
-\def\ocg@addocg#1{%
-  \xdef\ocg@list{\ocg@list #1 }%
+\def\ocgx@list{}
+\def\ocgx@addocg#1{%
+  \xdef\ocgx@list{\ocgx@list #1 }%
   }
-\def\ocg@OFFlist{}
-\def\ocg@addOFFocg#1{%
-  \ocg@addocg{#1}%
-  \xdef\ocg@OFFlist{\ocg@OFFlist #1 }%
+\def\ocgx@OFFlist{}
+\def\ocgx@addOFFocg#1{%
+  \ocgx@addocg{#1}%
+  \xdef\ocgx@OFFlist{\ocgx@OFFlist #1 }%
   }
 
-\def\ocg@lastobj{\the\pdflastobj\ocg@spacecs}%
+\def\ocgx@lastobj{\the\pdflastobj\ocgx@spacecs}%
 
-\long\def\ocg@OCG#1#2#3{%
-  \ifcsname ocg@OCG_#2\endcsname
-    \def\ocg@objspec{useobjnum \csname ocg@OCG_#2\endcsname}%
+\long\def\ocgx@OCG#1#2#3{%
+  \ifcsname ocgx@OCG_#2\endcsname
+    \def\ocgx@objspec{useobjnum \csname ocgx@OCG_#2\endcsname}%
   \else
-    \def\ocg@objspec{}%
+    \def\ocgx@objspec{}%
   \fi
-  \immediate\pdfobj\ocg@objspec{%
+  \immediate\pdfobj\ocgx@objspec{%
     << /Type/OCG
        /Name (#2) >> }%
-  \expandafter\xdef\csname ocg@OCG_#2\endcsname{\ocg@lastobj}%
-  \ocg@writeocg{/group\ocg@lastobj \ocg@lastobj 0 R }%
-  #1{\ocg@lastobj 0 R}%
-  \pdfliteral direct {/OC/group\ocg@lastobj BDC }%
+  \expandafter\xdef\csname ocgx@OCG_#2\endcsname{\ocgx@lastobj}%
+  \ocgx@writeocg{/group\ocgx@lastobj \ocgx@lastobj 0 R }%
+  #1{\ocgx@lastobj 0 R}%
+  \pdfliteral direct {/OC/group\ocgx@lastobj BDC }%
   #3%
   \pdfliteral direct {EMC}%
   }
 
 \long\def\switchOCG#1#2{%
-  \def\ocg@toswitch{}%
-  \ocg@switchOCG#1 ENDOFOCGS %
+  \def\ocgx@toswitch{}%
+  \ocgx@switchOCG#1 ENDOFOCGS %
   \hbox{%
     \pdfannot{%
       /Subtype /Link
-      /A << /S/SetOCGState /State [/Toggle \ocg@toswitch] >>
+      /A << /S/SetOCGState /State [/Toggle \ocgx@toswitch] >>
       /Border [0 0 0]
     }%
     #2}%
   }
 
 \long\def\showOCG#1#2{%
-  \def\ocg@toshow{}%
-  \ocg@showOCG#1 ENDOFOCGS %
+  \def\ocgx@toshow{}%
+  \ocgx@showOCG#1 ENDOFOCGS %
   \hbox{%
     \pdfannot{%
     /Subtype/Link
     /A << /S/SetOCGState
-          /State [/ON \ocg@toshow] >>
+          /State [/ON \ocgx@toshow] >>
           /Border [0 0 0]
         }%
     #2}%
   }
 
 \long\def\hideOCG#1#2{%
-  \def\ocg@tohide{}%
-  \ocg@hideOCG#1 ENDOFOCGS %
+  \def\ocgx@tohide{}%
+  \ocgx@hideOCG#1 ENDOFOCGS %
   \hbox{%
     \pdfannot{%
     /Subtype/Link
     /A << /S/SetOCGState
-          /State [/OFF \ocg@tohide] >>
+          /State [/OFF \ocgx@tohide] >>
           /Border [0 0 0]
         }%
     #2}%
   }
 
 \long\def\actionsOCG#1#2#3#4{
-  \def\ocg@toswitch{}%
-  \def\ocg@toshow{}%
-  \def\ocg@tohide{}%
-  \ocg@switchOCG#1 ENDOFOCGS %
-  \ocg@showOCG#2 ENDOFOCGS %
-  \ocg@hideOCG#3 ENDOFOCGS %
+  \def\ocgx@toswitch{}%
+  \def\ocgx@toshow{}%
+  \def\ocgx@tohide{}%
+  \ocgx@switchOCG#1 ENDOFOCGS %
+  \ocgx@showOCG#2 ENDOFOCGS %
+  \ocgx@hideOCG#3 ENDOFOCGS %
   \hbox{%
     \pdfannot{%
     /Subtype/Link
     /A << /S/SetOCGState
-          /State [/Toggle \ocg@toswitch /ON \ocg@toshow /OFF \ocg@tohide] >>
+          /State [/Toggle \ocgx@toswitch /ON \ocgx@toshow /OFF \ocgx@tohide] >>
           /Border [0 0 0]
         }%
     #4%
@@ -161,67 +161,67 @@
 }
 
 
-\csname ocg@end:ENDOFOCGS\endcsname
-\def\ocg@switchOCG#1 {%
-  \unless\ifcsname ocg@end:#1\endcsname
-    \ifcsname ocg@OCG_#1\endcsname
-      \expandafter\def\expandafter\ocg@toswitch\expandafter{%
-        \ocg@toswitch
-        \csname ocg@OCG_#1\endcsname 0 R }%
+\csname ocgx@end:ENDOFOCGS\endcsname
+\def\ocgx@switchOCG#1 {%
+  \unless\ifcsname ocgx@end:#1\endcsname
+    \ifcsname ocgx@OCG_#1\endcsname
+      \expandafter\def\expandafter\ocgx@toswitch\expandafter{%
+        \ocgx@toswitch
+        \csname ocgx@OCG_#1\endcsname 0 R }%
     \fi%
-    \expandafter\ocg@switchOCG
+    \expandafter\ocgx@switchOCG
   \fi
 }
 
-\def\ocg@showOCG#1 {%
-  \unless\ifcsname ocg@end:#1\endcsname
-    \ifcsname ocg@OCG_#1\endcsname
-      \expandafter\def\expandafter\ocg@toshow\expandafter{%
-        \ocg@toshow
-        \csname ocg@OCG_#1\endcsname 0 R }%
+\def\ocgx@showOCG#1 {%
+  \unless\ifcsname ocgx@end:#1\endcsname
+    \ifcsname ocgx@OCG_#1\endcsname
+      \expandafter\def\expandafter\ocgx@toshow\expandafter{%
+        \ocgx@toshow
+        \csname ocgx@OCG_#1\endcsname 0 R }%
     \fi%
-    \expandafter\ocg@showOCG
+    \expandafter\ocgx@showOCG
   \fi
 }
 
-\def\ocg@hideOCG#1 {%
-  \unless\ifcsname ocg@end:#1\endcsname
-    \ifcsname ocg@OCG_#1\endcsname
-      \expandafter\def\expandafter\ocg@tohide\expandafter{%
-        \ocg@tohide
-        \csname ocg@OCG_#1\endcsname 0 R }%
+\def\ocgx@hideOCG#1 {%
+  \unless\ifcsname ocgx@end:#1\endcsname
+    \ifcsname ocgx@OCG_#1\endcsname
+      \expandafter\def\expandafter\ocgx@tohide\expandafter{%
+        \ocgx@tohide
+        \csname ocgx@OCG_#1\endcsname 0 R }%
     \fi%
-    \expandafter\ocg@hideOCG
+    \expandafter\ocgx@hideOCG
   \fi
 }
 
-\def\ocg@afterfi#1#2\fi{\fi#1}
-\csname ocg@star:*\endcsname
+\def\ocgx@afterfi#1#2\fi{\fi#1}
+\csname ocgx@star:*\endcsname
 \def\OCG#1{%
-  \ifcsname ocg@star:#1\endcsname
-    \ocg@afterfi{\ocg@OCG\ocg@addOFFocg}%
+  \ifcsname ocgx@star:#1\endcsname
+    \ocgx@afterfi{\ocgx@OCG\ocgx@addOFFocg}%
   \else
-    \ocg@afterfi{\ocg@OCG\ocg@addocg{#1}}%
+    \ocgx@afterfi{\ocgx@OCG\ocgx@addocg{#1}}%
   \fi
 }
 
-\def\ocg@setpageresources{%
-  \ifcsname ocg@page:\thepage\endcsname
-  \edef\ocg@temp{\pdfpageresources{\the\pdfpageresources\ocg@spacecs
-      /Properties <<\csname ocg@page:\ocg@page\endcsname>>}}%  
-  \ocg@temp
+\def\ocgx@setpageresources{%
+  \ifcsname ocgx@page:\thepage\endcsname
+  \edef\ocgx@temp{\pdfpageresources{\the\pdfpageresources\ocgx@spacecs
+      /Properties <<\csname ocgx@page:\ocgx@page\endcsname>>}}%  
+  \ocgx@temp
   \fi
 }
 
 \def\finishOCG{%
-  \pdfcatalog {/OCProperties << /OCGs [\ocg@list]
-    /D << /Order [\ocg@list]
+  \pdfcatalog {/OCProperties << /OCGs [\ocgx@list]
+    /D << /Order [\ocgx@list]
     /BaseState/ON
-    /OFF [\ocg@OFFlist] >> >>}%
+    /OFF [\ocgx@OFFlist] >> >>}%
 }
 
 \output\expandafter{%
-  \expandafter\ocg@setpageresources
+  \expandafter\ocgx@setpageresources
   \the\output
 }
 
