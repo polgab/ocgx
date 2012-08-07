@@ -30,9 +30,13 @@
 
 
 \ifdefined\newcommand
+  % LaTeX
+  \def\ocg@page{\thepage}
   \def\ocg@error{\PackageError{newocg}}
   \RequirePackage{ifpdf}
 \else
+  % TeX
+  \def\ocg@page{\the\pageno}
   \def\ocg@error#1{\errmessage{Package newocg error: #1}}
   \input ifpdf.sty
 \fi
@@ -66,7 +70,7 @@
 \immediate\openout\ocg@write=\jobname.ocg
 \def\ocg@writeocg#1{%
   \edef\ocg@temp{\noexpand\noexpand\noexpand\ocg@store{#1}}%
-  \write\ocg@write\expandafter{\ocg@temp{\thepage}}%
+  \write\ocg@write\expandafter{\ocg@temp{\ocg@page}}%
   }
 
 \def\ocg@spacecs{ }
@@ -204,7 +208,7 @@
 \def\ocg@setpageresources{%
   \ifcsname ocg@page:\thepage\endcsname
   \edef\ocg@temp{\pdfpageresources{\the\pdfpageresources\ocg@spacecs
-      /Properties <<\csname ocg@page:\thepage\endcsname>>}}%  
+      /Properties <<\csname ocg@page:\ocg@page\endcsname>>}}%  
   \ocg@temp
   \fi
 }
