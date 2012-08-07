@@ -17,9 +17,14 @@ Pour ocgx.tex:
   création d'un lien (en fait une annotation) *avant* la création du
   groupe correspondant.
 
+* vérifier l'emploi de \the\pageno (TeX) et \thepage (LaTeX). Ce ne sont
+  pas des compteurs absolus. Il n'y a donc pas garanti d'unicité...
+
 * si possible, permettre l'ajout de matériel dans un *même* groupe via
   plusieurs appels successifs à \OCG avec le même nom de groupe (si
   c'est faisable).
+
+* ajouter une licence, les auteurs, les dates...
 
 * écrire une documentation d'usage et une documentation du code.
 
