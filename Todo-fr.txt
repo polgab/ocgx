@@ -23,6 +23,10 @@ Pour ocgx.tex:
 
 * écrire une documentation d'usage et une documentation du code.
 
+* en faire un package propre (.dtx,.ins,etc.).
+
+* le publier sur CTAN.
+
 Dans demo-ocgx.tex:
 
 * extraire les parties TikZ dans tikz-ocgx
