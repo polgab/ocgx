@@ -1,0 +1,19 @@
+Layer 4
+Filename:	mosaic4.png
+Pixel Dimensions:	220px x 220px
+Filesize:	5.13kb
+by positive_judes
+Layer 3
+Filename:	mosaic3.png
+Pixel Dimensions:	220px x 220px
+Filesize:	0.74kb
+by positive_judes
+Layer 2
+Filename:	mosaic2.png
+Pixel Dimensions:	140px x 140px
+Filesize:	0.46kb
+by positive_judes
+Base Layer
+Filename:	mosaic1.png
+Pixel Dimensions:	60px x 60px
+Filesize:	0.21kb
