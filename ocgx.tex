@@ -57,7 +57,7 @@
     \expandafter\def\csname ocgx@page:#2\endcsname{}%
   \fi
   \expandafter\edef\csname ocgx@page:#2\endcsname{\csname ocgx@page:#2\endcsname#1}%
-  }
+}
 
 \newread\ocgx@read
 \openin\ocgx@read=\jobname.ocg
@@ -105,50 +105,56 @@
   }
 
 \long\def\switchOCG#1#2{%
-  \def\ocgx@toswitch{}%
-  \ocgx@switchOCG#1 ENDOFOCGS %
+  \def\ocgx@list{}%
+  \ocgx@listOCG#1 ENDOFOCGS %
   \hbox{%
     \pdfannot{%
       /Subtype /Link
-      /A << /S/SetOCGState /State [/Toggle \ocgx@toswitch] >>
+      /A << /S/SetOCGState /State [/Toggle \ocgx@list] >>
       /Border [0 0 0]
     }%
     #2}%
   }
 
 \long\def\showOCG#1#2{%
-  \def\ocgx@toshow{}%
-  \ocgx@showOCG#1 ENDOFOCGS %
+  \def\ocgx@list{}%
+  \ocgx@listOCG#1 ENDOFOCGS %
   \hbox{%
     \pdfannot{%
     /Subtype/Link
     /A << /S/SetOCGState
-          /State [/ON \ocgx@toshow] >>
+          /State [/ON \ocgx@list] >>
           /Border [0 0 0]
         }%
     #2}%
   }
 
 \long\def\hideOCG#1#2{%
-  \def\ocgx@tohide{}%
-  \ocgx@hideOCG#1 ENDOFOCGS %
+  \def\ocgx@list{}%
+  \ocgx@listOCG#1 ENDOFOCGS %
   \hbox{%
     \pdfannot{%
     /Subtype/Link
     /A << /S/SetOCGState
-          /State [/OFF \ocgx@tohide] >>
+          /State [/OFF \ocgx@list] >>
           /Border [0 0 0]
         }%
     #2}%
   }
 
 \long\def\actionsOCG#1#2#3#4{
-  \def\ocgx@toswitch{}%
-  \def\ocgx@toshow{}%
-  \def\ocgx@tohide{}%
-  \ocgx@switchOCG#1 ENDOFOCGS %
-  \ocgx@showOCG#2 ENDOFOCGS %
-  \ocgx@hideOCG#3 ENDOFOCGS %
+  \def\ocgx@list{}%
+  \ocgx@listOCG#1 ENDOFOCGS %
+  \edef\ocgx@toswitch{\ocgx@list}
+  %
+  \def\ocgx@list{}%
+  \ocgx@listOCG#1 ENDOFOCGS %
+  \edef\ocgx@toshow{\ocgx@list}
+  %
+  \def\ocgx@list{}%
+  \ocgx@listOCG#1 ENDOFOCGS %
+  \edef\ocgx@tohide{\ocgx@list}
+  %
   \hbox{%
     \pdfannot{%
     /Subtype/Link
@@ -162,36 +168,14 @@
 
 
 \csname ocgx@end:ENDOFOCGS\endcsname
-\def\ocgx@switchOCG#1 {%
+\def\ocgx@listOCG#1 {%
   \unless\ifcsname ocgx@end:#1\endcsname
     \ifcsname ocgx@OCG_#1\endcsname
-      \expandafter\def\expandafter\ocgx@toswitch\expandafter{%
-        \ocgx@toswitch
+      \expandafter\def\expandafter\ocgx@list\expandafter{%
+        \ocgx@list
         \csname ocgx@OCG_#1\endcsname 0 R }%
     \fi%
-    \expandafter\ocgx@switchOCG
-  \fi
-}
-
-\def\ocgx@showOCG#1 {%
-  \unless\ifcsname ocgx@end:#1\endcsname
-    \ifcsname ocgx@OCG_#1\endcsname
-      \expandafter\def\expandafter\ocgx@toshow\expandafter{%
-        \ocgx@toshow
-        \csname ocgx@OCG_#1\endcsname 0 R }%
-    \fi%
-    \expandafter\ocgx@showOCG
-  \fi
-}
-
-\def\ocgx@hideOCG#1 {%
-  \unless\ifcsname ocgx@end:#1\endcsname
-    \ifcsname ocgx@OCG_#1\endcsname
-      \expandafter\def\expandafter\ocgx@tohide\expandafter{%
-        \ocgx@tohide
-        \csname ocgx@OCG_#1\endcsname 0 R }%
-    \fi%
-    \expandafter\ocgx@hideOCG
+    \expandafter\ocgx@listOCG
   \fi
 }
 
