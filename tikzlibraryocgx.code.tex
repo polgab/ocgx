@@ -1,0 +1,79 @@
+\tikzset{
+  switch with mark/.style 2 args={
+    path picture={
+      \OCG{checkbox@#1}{
+        \draw
+        (path picture bounding box.south west)
+        --
+        (path picture bounding box.north east)
+        (path picture bounding box.south east)
+        --
+        (path picture bounding box.north west)
+        ;
+      }
+      \path let
+      \p1 = (path picture bounding box.south west),
+      \p2 = (path picture bounding box.north east),
+      \p3 = (\x2-\x1,\y2-\y1)
+      in
+      (path picture bounding box.center)
+      node[inner sep=0pt,anchor=center,outer sep=0]
+      {\switchOCG{#2 checkbox@#1}{\phantom{\rule{\x3}{\y3}}}};
+      \typeout{switch with mark-#2-checkbox@#1}
+    },
+  },
+  switch/.style={
+    path picture={
+      \path let
+      \p1 = (path picture bounding box.south west),
+      \p2 = (path picture bounding box.north east),
+      \p3 = (\x2-\x1,\y2-\y1)
+      in
+      (path picture bounding box.center)
+      node[inner sep=0pt,anchor=center,outer sep=0pt]
+      {\switchOCG{#1}{\phantom{\rule{\x3}{\y3}}}};
+    },
+  },
+  show/.style={
+    path picture={
+      \path let
+      \p1 = (path picture bounding box.south west),
+      \p2 = (path picture bounding box.north east),
+      \p3 = (\x2-\x1,\y2-\y1)
+      in
+      (path picture bounding box.center)
+      node[inner sep=0pt,anchor=center]
+      {\showOCG{#1}{\phantom{\rule{\x3}{\y3}}}};
+    },
+  },
+  hide/.style={
+    path picture={
+      \path let
+      \p1 = (path picture bounding box.south west),
+      \p2 = (path picture bounding box.north east),
+      \p3 = (\x2-\x1,\y2-\y1)
+      in
+      (path picture bounding box.center)
+      node[inner sep=0pt,anchor=center]
+      {\hideOCG{#1}{\phantom{\rule{\x3}{\y3}}}};
+    },
+  },
+  actions/.style n args={3}{
+    path picture={
+      \path let
+      \p1 = (path picture bounding box.south west),
+      \p2 = (path picture bounding box.north east),
+      \p3 = (\x2-\x1,\y2-\y1)
+      in
+      (path picture bounding box.center)
+      node[inner sep=0pt,anchor=center]
+      {\actionsOCG{#1}{#2}{#3}{\phantom{\rule{\x3}{\y3}}}};
+    },
+  },
+}
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

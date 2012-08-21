@@ -2,108 +2,10 @@
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{tikz}
-\usetikzlibrary{backgrounds,fit,calc,shadows,chains}
+\usetikzlibrary{backgrounds,fit,calc,shadows,chains,ocgx}
 \usepackage{ocgx}
 \usepackage{microtype}
 \usepackage{url}
-
-\tikzset{
-  switch with mark/.style 2 args={
-    path picture={
-      \OCG{checkbox@#1}{
-        \draw
-        (path picture bounding box.south west)
-        --
-        (path picture bounding box.north east)
-        (path picture bounding box.south east)
-        --
-        (path picture bounding box.north west)
-        ;
-      }
-      \path let
-      \p1 = (path picture bounding box.south west),
-      \p2 = (path picture bounding box.north east),
-      \p3 = (\x2-\x1,\y2-\y1)
-      in
-      (path picture bounding box.center)
-      node[inner sep=0pt,anchor=center] {%\typeout{\x3-\y3}%
-        \switchOCG{#2 checkbox@#1}{%
-          \phantom{%
-            \rule{\x3}{\y3}%
-          }
-        }};
-      \typeout{switch with mark-#2-checkbox@#1}
-    },
-  },
-  switch/.style={
-    path picture={
-      \path let
-      \p1 = (path picture bounding box.south west),
-      \p2 = (path picture bounding box.north east),
-      \p3 = (\x2-\x1,\y2-\y1)
-      in
-      (path picture bounding box.center)
-      node[inner sep=0pt,anchor=center] {%\typeout{\x3-\y3}%
-        \switchOCG{#1}{%
-          \phantom{%
-            \rule{\x3}{\y3}%
-          }%
-        }};
-      %\typeout{switch-#1}
-    },
-  },
-  show/.style={
-    path picture={
-      \path let
-      \p1 = (path picture bounding box.south west),
-      \p2 = (path picture bounding box.north east),
-      \p3 = (\x2-\x1,\y2-\y1)
-      in
-      (path picture bounding box.center)
-      node[inner sep=0pt,anchor=center] {%\typeout{\x3-\y3}%
-        \showOCG{#1}{%
-          \phantom{%
-            \rule{\x3}{\y3}%
-          }%
-        }};
-      %\typeout{switch-#1}
-    },
-  },
-  hide/.style={
-    path picture={
-      \path let
-      \p1 = (path picture bounding box.south west),
-      \p2 = (path picture bounding box.north east),
-      \p3 = (\x2-\x1,\y2-\y1)
-      in
-      (path picture bounding box.center)
-      node[inner sep=0pt,anchor=center] {%\typeout{\x3-\y3}%
-        \hideOCG{#1}{%
-          \phantom{%
-            \rule{\x3}{\y3}%
-          }%
-        }};
-      %\typeout{switch-#1}
-    },
-  },
-  actions/.style n args={3}{
-    path picture={
-      \path let
-      \p1 = (path picture bounding box.south west),
-      \p2 = (path picture bounding box.north east),
-      \p3 = (\x2-\x1,\y2-\y1)
-      in
-      (path picture bounding box.center)
-      node[inner sep=0pt,anchor=center] {%\typeout{\x3-\y3}%
-        \actionsOCG{#1}{#2}{#3}{%
-          \phantom{%
-            \rule{\x3}{\y3}%
-          }%
-        }};
-      %\typeout{switch-#1}
-    },
-  },
-}
 
 \newcommand\TkzTileWallPaper[3]{
   \pgfmathtruncatemacro{\nx}{\paperwidth/#1}
@@ -120,6 +22,11 @@
 \setbeamersize{text margin left=3mm,text margin right=3mm}
 
 \newcommand\latex{{\rmfamily\LaTeX}}
+
+\makeatletter
+\def\ocgxshowlist{\ocgx@list}
+\makeatother
+
 
 \begin{document}
 \begin{frame}
@@ -144,6 +51,7 @@
         \node[rounded corners=1mm,draw,line width=1pt,
         minimum size=3mm,fill=rgb \col,fill opacity=.5,
         drop shadow,
+        inner sep=0,inner xsep=0,
         switch with mark={t1\col}{t1\col}]
         at (\angle:20mm){};
         % \end{pgfonlayer}
@@ -162,7 +70,7 @@
         \end{pgfonlayer}
         \node[rounded corners=1mm,draw,line width=1pt,
         minimum size=3mm,fill=cmy \col,fill opacity=.5,
-        drop shadow,
+        drop shadow,inner sep=0,outer sep=0,
         switch with mark={t2\col}{t2\col}]
         at (\angle:20mm){};
       }
@@ -326,9 +234,10 @@
 
   \tikzset{
     checkbox/.style={
-      draw,line width=.5pt,%
-      minimum size=2mm,top color=white,bottom color=cyan,
+      draw,circle,line width=.5pt,%
+      minimum size=.5em,top color=white,bottom color=cyan,
       fill opacity=1,
+      inner sep=0,
       drop shadow={fill=black,shadow xshift=.5mm,shadow yshift=-.5mm},
     },
     sampletext/.style={
@@ -343,27 +252,27 @@
 
   {\centering
     \begin{tikzpicture}
-      \OCG{withprotrusion}{
+      \OCG{protrusion}{
         \microtypesetup{protrusion=true}%
-        \OCG{withexpansion1}{%
+        \OCG{expansion-and-protrusion}{%
           \microtypesetup{expansion=true}%
           \node[sampletext]{\sampletext\par};%
         }
         
-        \OCG*{withoutexpansion1}{%
+        \OCG*{no-expansion-and-protrusion}{%
           \microtypesetup{expansion=false}%
           \node[sampletext]{\sampletext\par};%
         }
       }
       
-      \OCG*{withoutprotrusion}{
+      \OCG*{no-protrusion}{
         \microtypesetup{protrusion=false}%
-        \OCG{withexpansion2}{%
+        \OCG{expansion-and-no-protrusion}{%
           \microtypesetup{expansion=true}%
           \node[sampletext]{\sampletext\par};%
         }
         
-        \OCG*{withoutexpansion2}{%
+        \OCG*{no-expansion-and-no-protrusion}{%
           \microtypesetup{expansion=false}%
           \node[sampletext]{\sampletext\par};%
         }
@@ -374,16 +283,19 @@
   Microtype :
   \begin{tikzpicture}
     \node[checkbox,
-    switch with mark={protrusion}{withprotrusion withoutprotrusion}]
+    switch with mark={protrusion}{protrusion no-protrusion}]
     {};
   \end{tikzpicture} protrusion 
   \begin{tikzpicture}
     \node[checkbox,
     switch with mark={expansion}%
-    {withexpansion1 withoutexpansion1 withexpansion2 withoutexpansion2}]
+    {expansion-and-protrusion no-expansion-and-protrusion
+      expansion-and-no-protrusion no-expansion-and-no-protrusion}]
     {};
   \end{tikzpicture} expansion
   
+\end{frame}
+
 \end{frame}
 
 \end{document}
