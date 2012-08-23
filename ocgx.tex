@@ -52,6 +52,7 @@
    \ocgx@error{pdfeTeX, version >= 1.20, required}
 \fi
 
+% store OCG groups page per page
 \def\ocgx@store#1#2{%
   \unless\ifcsname ocgx@page:#2\endcsname
     \expandafter\def\csname ocgx@page:#2\endcsname{}%
@@ -59,6 +60,7 @@
   \expandafter\edef\csname ocgx@page:#2\endcsname{\csname ocgx@page:#2\endcsname#1}%
 }
 
+% read file \jobname.ocg
 \newread\ocgx@read
 \openin\ocgx@read=\jobname.ocg
 \unless\ifeof\ocgx@read
@@ -66,6 +68,7 @@
 \fi
 \closein\ocgx@read
 
+% write \jobname.ocg
 \newwrite\ocgx@write
 \immediate\openout\ocgx@write=\jobname.ocg
 \def\ocgx@writeocg#1{%
@@ -73,6 +76,7 @@
   \write\ocgx@write\expandafter{\ocgx@temp{\ocgx@page}}%
   }
 
+% space ?
 \def\ocgx@spacecs{ }
 
 \def\ocgx@list{}
@@ -200,7 +204,8 @@
 \def\finishOCG{%
   \pdfcatalog {/OCProperties << /OCGs [\ocgx@list]
     /D << /Order [\ocgx@list]
-    /BaseState/ON
+    %/BaseState/ON
+    /ON [\ocgx@list]
     /OFF [\ocgx@OFFlist] >> >>}%
 }
 
