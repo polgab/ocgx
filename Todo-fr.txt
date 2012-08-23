@@ -1,6 +1,6 @@
 Pour ocgx.tex:
 
-* gérer l'arborescence des OCG (celle afichée par les viewers PDF)
+* gérer l'arborescence des OCG (celle affichée par les viewers PDF)
 
   * pouvoir fournir un nom plus lisible que le nom interne de l'OCG.
 
@@ -10,7 +10,13 @@ Pour ocgx.tex:
   * par défaut, produire une branche par page (mais, comment faire pour
     les OCG sur plusieurs pages ?).
 
-* créer des OCG ayant du contenu sur plusieurs pages (je crois que c'est
+* détecter un changement de page à l'intérieur d'un OCG et :
+
+   (1) l'interdire ?
+
+   (2) recréer un second groupe sur la page suivante ?
+
+   (3) créer un OCG ayant du contenu sur plusieurs pages (si c'est
   autorisé par la norme PDF).
 
 * corriger le code modifié/ajouté par P.Gaborit pour permettre la
