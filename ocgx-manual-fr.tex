@@ -1,0 +1,262 @@
+\documentclass[a4paper]{article}
+%\usepackage[margin=3cm]{geometry}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{ifthen}
+\usepackage{doc}
+\usepackage{fancyvrb}
+\usepackage{newverbs}
+\usepackage{listings}
+\lstdefinestyle{TeXcode}{
+  fancyvrb=true,
+  language=[LaTeX]TeX,
+  basicstyle=\ttfamily,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{red!50!black}\itshape,
+  stringstyle=\ttfamily\color{green!50!black},
+  showspaces=false,
+  showstringspaces=false,
+  backgroundcolor=\color{white},
+  fontadjust=true,
+  aboveskip=1ex,
+  belowskip=1ex,
+  emphstyle=\color{red},
+  keepspaces=true,
+  flexiblecolumns=true
+}
+\newenvironment{prog}[1]{\vspace{1ex}--- \texttt{\emph{#1}} ---}{}
+\newcommand{\TeXexample}[3][]{
+  \ifthenelse{\equal{#1}{}}{\begin{prog}{#2}}{\begin{prog}{#2 (#1)}}
+  \lstinputlisting[style=TeXcode,aboveskip=0ex,#3]{#2}
+  \end{prog}
+}
+  
+\usepackage{url}
+\usepackage[french]{babel}
+\usepackage{parskip}
+
+\newverbcommand\code{\color{red}}{}
+\newverbcommand\style{\hspace{-2em}\color{red}}{}
+\newcommand\argument[1]{\textcolor{black}{\ttfamily #1}}
+\newcommand\TikZ{Ti\emph{k}Z}
+
+\title{Documentation du package \texttt{ocgx.sty}}
+\author{%
+  Paul Isambert\\\url{zappathustra@free.fr}%
+  \and%
+  Paul Gaborit\\\url{paul.gaborit@gmail.com}}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+
+Le package \code+ocgx+ permet de créer et gérer des OCG
+(\emph{Optional Content Group}) dans les documents PDF.
+
+Chaque OCG regroupe du contenu \TeX{} dans une couche de la page
+courante. Chacune de ces couches peut être afficher ou non. Des liens
+permettent d'activer ou de désactiver l'affichage des OCG.
+
+Contrairement à la plupart des autres packages qui créent des OCG,
+\code+ocgx+ n'utilise pas de code Javascript embarqué dans le document
+PDF. Il est donc utilisable avec de plus nombreux outils de
+visualisation PDF (à ce jour, nous avons pu tester avec succès
+\emph{Acrobat Reader}, \emph{Foxit Reader} et \emph{evince}).
+
+\section{Utilisation}
+
+Voici un exemple simple.
+
+\TeXexample{ocgx-example-1.tex}{}
+
+Ce document crée un OCG nommé \emph{ocg1} contenant le texte \og
+\emph{first example1.} \fg{} qui est visible par défaut. Vous pouvez
+afficher ou cacher cet OCG en cliquant sur le lien \og \emph{Button.}
+\fg{}.
+
+\subsection{La création des OCG}
+
+\DescribeMacro{\OCG}%
+\DescribeMacro{\OCG*}%
+La macro \code+\OCG+ requiert deux arguments. Le premier argument est le
+nom de l'OCG à créer et le second est tout le matériel \TeX{} à placer
+dans cet OCG. Le groupe est visible par défaut. La version étoilée crée
+un groupe invisible par défaut.
+
+Le code suivant crée un OCG nommé \emph{nomocg} avec comme contenu le
+texte \emph{contenu de l'ocg}. Ce groupe sera visible par défaut :
+
+\begin{lstlisting}[style=TeXcode]
+  \OCG{nomocg}{contenu de l'ocg}
+\end{lstlisting}
+
+\textbf{Note :} le contenu d'un OCG ne doit pas s'étendre sur plusieurs
+pages. Actuellement, rien n'empêche de le faire mais le résultat obtenu
+ne sera certainement pas celui que vous attendez !
+
+\subsection{La gestion de la visibilité des OCG}
+
+\textbf{Note 1:} les macros suivantes utilisent une ou plusieurs listes
+de noms d'OCG. Les noms des différents OCG sont séparés par des
+espaces. Si le nom d'un OCG contient lui-même un espace, il faudra
+entourer ce nom par des accolades.
+
+\textbf{Note 2:} les liens créés par toutes ces macros sont placés dans
+une \code+\hbox+. Ils ne peuvent pas donc s'étendre sur plusieurs lignes.
+
+\textbf{Note 3:} un OCG doit être créé \emph{avant} de pouvoir être
+utilisé par l'une des macros suivantes.
+
+\DescribeMacro{\switchOCG}%
+La macro \code+\switchOCG+ transforme son second argument en un lien
+cliquable qui basculera l'état de visibilité de tous les OCG listés dans
+son premier argument (si un OCG était visible, il deviendra invisible
+et, inversement, si un OCG était invisible, il deviendra visible).
+
+Le code suivant crée le lien \emph{bascule} qui basculera l'état des OCG
+nommés \emph{ocg1} et \emph{ocg3} ainsi que de l'OCG nommé \emph{ocg
+  avec espace} (son nom contient des espaces) :
+\begin{lstlisting}[style=TeXcode]
+  \switchOCG{ocg1 {ocg avec espace} ocg3}{bascule}
+\end{lstlisting}
+
+\DescribeMacro{\showOCG}%
+La macro \code+\showOCG+ transforme son second argument en un lien
+cliquable qui rendra visibles tous les OCG listés dans son premier
+argument (un OCG invisible deviendra visible et un OCG déjà visible le
+restera).
+
+Le code suivant crée le lien \emph{voir} qui rendra visibles les OCG
+nommés \emph{ocg1} et \emph{ocg3} ainsi que de l'OCG nommé \emph{ocg
+  avec espace} (son nom contient des espaces) :
+\begin{lstlisting}[style=TeXcode]
+  \showOCG{ocg1 {ocg avec espace} ocg3}{voir}
+\end{lstlisting}
+
+\DescribeMacro{\hideOCG}%
+La macro \code+\hideOCG+ transforme son second argument en un lien
+cliquable qui rendra invisibles tous les OCG listés dans son premier
+argument (un OCG visible deviendra invisible et un OCG déjà invisible le
+restera).
+
+Le code suivant crée le lien \emph{cacher} qui rendra invisibles les OCG
+nommés \emph{ocg1} et \emph{ocg3} ainsi que de l'OCG nommé \emph{ocg
+  avec espace} (son nom contient des espaces) :
+\begin{lstlisting}[style=TeXcode]
+  \hideOCG{ocg1 {ocg avec espace} ocg3}{cacher}
+\end{lstlisting}
+
+\DescribeMacro{\actionsOCG}%
+La macro \code+\actionsOCG+ transforme son quatrième argument en un lien
+cliquable. Les trois premiers arguments sont des listes d'OCG. La
+première liste contient les noms des OCG dont il faut basculer l'état de
+visibilité. La seconde liste contient les noms des OCG qu'il faudra
+rendre visibles et la troisième liste contient les noms des OCG qu'il
+faudra rendre invisibles.
+
+Le code suivant crée le lien \emph{actions} qui basculera l'état de
+visibilité de l'OCG nommé \emph{ocg1}, qui rendra visible l'OCG nommé
+\emph{ocg3} et qui rendre invisible l'OCG nommé \emph{ocg avec espace}
+(son nom contient des espaces) :
+\begin{lstlisting}[style=TeXcode]
+  \actionsOCG{ocg1}{ocg3}{{ocg avec espace}}{actions}
+\end{lstlisting}
+
+\section{Usage combiné avec \TikZ{}}
+
+Vous pouvez utilisez le package \code+ocgx+ avec \TikZ{}. Le package
+\code+ocgx+ fournit une bibliothèque \TikZ{} proposant cinq styles
+spécifiques pour transformer un chemin (\code+\path+ ou \code+\node+) en
+lien cliquable. Pour cela, il vous suffit d'ajouter les lignes suivantes
+dans votre préambule:
+\begin{lstlisting}[style=TeXcode]
+  \usepackage{tikz}
+  \usetikzlibrary{ocgx}
+\end{lstlisting}
+
+\begin{list}{}
+\item
+\noindent\style+/tikz/switch OCG+\argument{=\{\emph{<liste d'OCG>}\}}
+
+Ce style transforme le chemin ou le n\oe{}ud courant en un lien
+fonctionnant comme celui de la macro \code+\switchOCG+ (l'état de
+visibilité des OCG listés est inversé).
+
+\noindent\style+/tikz/show OCG+\argument{=\{\emph{<liste d'OCG>}\}}
+
+Ce style transforme le chemin ou le n\oe{}ud courant en un lien
+fonctionnant comme celui de la macro \code+\showOCG+ (les OCG listés
+sont rendus visibles).
+
+\noindent\style+/tikz/hide OCG+\argument{=\{\emph{<liste d'OCG>}\}}
+
+Ce style transforme le chemin ou le n\oe{}ud courant en un lien
+fonctionnant comme celui de la macro \code+\hideOCG+ (les OCG listés
+sont rendus invisibles).
+
+\noindent\style+/tikz/actions OCG+\argument{=\{\emph{<liste d'OCG>}\}\{\emph{<liste d'OCG>}\}\{\emph{<liste d'OCG>}\}}
+
+Ce style transforme le chemin ou le n\oe{}ud courant en un lien
+fonctionnant comme celui de la macro \code+\actionsOCG+ (l'état de
+visibilité des OCG de la première liste est inversé, les OCG de la
+seconde liste sont rendus visibles et ceux de la troisième liste sont
+rendus invisibles).
+
+\noindent\style+/tikz/switch OCG with mark+\argument{=\{\emph{<basename>}\}\{\emph{<liste d'OCG>}\}}
+
+Ce style transforme le chemin ou le n\oe{}ud courant en un lien
+fonctionnant comme celui de la macro \code+\switchOCG+ (l'état de
+visibilité des OCG listés est inversé).
+
+Une marque (actuellement une simple croix) est dessinée par dessus le
+chemin ou le noeud courant dans un OCG dont le nom est
+\code+checkbox@<basename>+. La visibilité de ce nouvel OCG sera inversé
+en même temps que ceux de toute la liste.
+\end{list}
+
+\textbf{Note:} Quelle que soit la forme du chemin ou du n\oe{}ud
+courant, c'est sa \emph{bounding box} qui est utilisée pour fabriquer le
+lien (le lien est donc toujours rectangulaire).
+
+\section{Limitations et bugs}
+
+Voici quelques-unes des limitations et des bugs de la version actuelle:
+\begin{enumerate}
+\item Les liens sont toujours des rectangles \emph{horizontaux}!
+\item Les OCG qui s'étendent sur plusieurs pages ne sont pas détectés
+  mais ne fonctionnent pas correctement.
+\item La liste des OCG créés par \code+ocgx+ est vue par les
+  visualisateurs PDF comme une liste à plat. Leur éventuelle hiérarchie
+  n'est pas affichée.
+\item Un OCG doit être créé \emph{avant} son utilisation dans un lien.
+\item Le contenu d'un OCG ne peut pas être créé en plusieurs fois.
+\item Si un même nom est utilisé pour plusieurs OCG, seul le dernier
+  fonctionne mais aucun message n'est affiché.
+\item La documentation n'existe qu'en français.
+\item Le package n'est pas encore disponible sur CTAN.
+\end{enumerate}
+
+\section{Exemple}
+
+Le document \code+demo-ocgx.tex+ propose plusieurs exemples
+d'utilisation du package \code+ocgx+ avec \TikZ{}.
+
+\section{Distribution}
+
+Ce package est encore expérimental. Il n'est pas encore diffusé sur
+CTAN. Vous pouvez le récupérer sur
+\url{https://github.com/polgab/ocgx}. Toute aide pour participer à son
+développement est la bienvenue. N'hésitez pas à contacter les auteurs.
+
+\end{document}
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
