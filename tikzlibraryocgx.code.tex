@@ -1,5 +1,7 @@
+\RequirePackage{ocgx}
+
 \tikzset{
-  switch with mark/.style 2 args={
+  switch OCG with mark/.style 2 args={
     path picture={
       \OCG{checkbox@#1}{
         \draw
@@ -22,7 +24,7 @@
       \typeout{switch with mark-#2-checkbox@#1}
     },
   },
-  switch/.style={
+  switch OCG/.style={
     path picture={
       \path let
       \p1 = (path picture bounding box.south west),
@@ -34,7 +36,7 @@
       {\switchOCG{#1}{\phantom{\rule{\x3}{\y3}}}};
     },
   },
-  show/.style={
+  show OCG/.style={
     path picture={
       \path let
       \p1 = (path picture bounding box.south west),
@@ -46,7 +48,7 @@
       {\showOCG{#1}{\phantom{\rule{\x3}{\y3}}}};
     },
   },
-  hide/.style={
+  hide OCG/.style={
     path picture={
       \path let
       \p1 = (path picture bounding box.south west),
@@ -58,7 +60,7 @@
       {\hideOCG{#1}{\phantom{\rule{\x3}{\y3}}}};
     },
   },
-  actions/.style n args={3}{
+  actions OCG/.style n args={3}{
     path picture={
       \path let
       \p1 = (path picture bounding box.south west),

@@ -52,7 +52,7 @@
         minimum size=3mm,fill=rgb \col,fill opacity=.5,
         drop shadow,
         inner sep=0,inner xsep=0,
-        switch with mark={t1\col}{t1\col}]
+        switch OCG with mark={t1\col}{t1\col}]
         at (\angle:20mm){};
         % \end{pgfonlayer}
       }
@@ -71,7 +71,7 @@
         \node[rounded corners=1mm,draw,line width=1pt,
         minimum size=3mm,fill=cmy \col,fill opacity=.5,
         drop shadow,inner sep=0,outer sep=0,
-        switch with mark={t2\col}{t2\col}]
+        switch OCG with mark={t2\col}{t2\col}]
         at (\angle:20mm){};
       }
     \end{scope}
@@ -82,7 +82,7 @@
       \node%
       [on chain,draw,rounded corners=1mm,fill=white,drop shadow,
       minimum size=3mm,inner sep=1mm,
-      switch={%
+      switch OCG={%
         t1red checkbox@t1red %
         t1blue checkbox@t1blue %
         t1green checkbox@t1green %
@@ -95,7 +95,7 @@
       \node%
       [on chain,draw,rounded corners=1mm,fill=white,drop shadow,
       minimum size=3mm,inner sep=1mm,
-      switch={%
+      switch OCG={%
         t1yellow checkbox@t1yellow %
         t1cyan checkbox@t1cyan %
         t1magenta checkbox@t1magenta %
@@ -110,7 +110,7 @@
       \node%
       [on chain,draw,rounded corners=1mm,fill=white,drop shadow,
       minimum size=3mm,inner sep=1mm,
-      show={%
+      show OCG={%
         t1red checkbox@t1red %
         t1blue checkbox@t1blue %
         t1green checkbox@t1green %
@@ -123,7 +123,7 @@
       \node%
       [on chain,draw,rounded corners=1mm,fill=white,drop shadow,
       minimum size=3mm,inner sep=1mm,
-      show={%
+      show OCG={%
         t1yellow checkbox@t1yellow %
         t1cyan checkbox@t1cyan %
         t1magenta checkbox@t1magenta %
@@ -138,7 +138,7 @@
       \node%
       [on chain,draw,rounded corners=1mm,fill=white,drop shadow,
       minimum size=3mm,inner sep=1mm,
-      hide={%
+      hide OCG={%
         t1red checkbox@t1red %
         t1blue checkbox@t1blue %
         t1green checkbox@t1green %
@@ -151,7 +151,7 @@
       \node%
       [on chain,draw,rounded corners=1mm,fill=white,drop shadow,
       minimum size=3mm,inner sep=1mm,
-      hide={%
+      hide OCG={%
         t1yellow checkbox@t1yellow %
         t1cyan checkbox@t1cyan %
         t1magenta checkbox@t1magenta %
@@ -209,7 +209,7 @@
         minimum size=3mm,top color=white,bottom color=black,
         fill opacity=.5,
         drop shadow={fill=black},
-        switch with mark={\pictname}{\pictname}]
+        switch OCG with mark={\pictname}{\pictname}]
         at ([xshift=3mm,yshift=.5mm]a.west) {};
         
       }
@@ -283,12 +283,12 @@
   Microtype :
   \begin{tikzpicture}
     \node[checkbox,
-    switch with mark={protrusion}{protrusion no-protrusion}]
+    switch OCG with mark={protrusion}{protrusion no-protrusion}]
     {};
   \end{tikzpicture} protrusion 
   \begin{tikzpicture}
     \node[checkbox,
-    switch with mark={expansion}%
+    switch OCG with mark={expansion}%
     {expansion-and-protrusion no-expansion-and-protrusion
       expansion-and-no-protrusion no-expansion-and-no-protrusion}]
     {};
