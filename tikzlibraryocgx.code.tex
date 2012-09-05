@@ -3,7 +3,7 @@
 \tikzset{
   switch OCG with mark/.style 2 args={
     path picture={
-      \OCG{checkbox@#1}{
+      \begin{ocg}{checkbox@#1}{checkbox@#1}{1}
         \draw
         (path picture bounding box.south west)
         --
@@ -12,7 +12,7 @@
         --
         (path picture bounding box.north west)
         ;
-      }
+      \end{ocg}
       \path let
       \p1 = (path picture bounding box.south west),
       \p2 = (path picture bounding box.north east),

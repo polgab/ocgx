@@ -1,4 +1,4 @@
-\documentclass[a4paper]{article}
+\documentclass[a4paper]{ltxdoc}
 \usepackage[vmargin=2cm,hmargin=3.5cm]{geometry}
 \usepackage[latin1]{inputenc}
 \usepackage[T1]{fontenc}
@@ -35,8 +35,12 @@
 }
   
 \usepackage{url}
+\usepackage{hyperref}
 \usepackage[french]{babel}
 \usepackage{parskip}
+
+\newcounter{mynotes}
+\newenvironment{note}{\textbf{Note \stepcounter{mynotes}\arabic{mynotes} :} }{}
 
 \newverbcommand\code{\color{red}}{}
 \newverbcommand\style{\hspace{-2em}\color{red}}{}
@@ -54,18 +58,19 @@
 \maketitle
 
 
-Le package \code+ocgx+ permet de créer et gérer des OCG
-(\emph{Optional Content Group}) dans les documents PDF.
+Le package \code+ocgx+ étend et documente le package \code+ocg+ (qui
+vient avec Asymptote) qui permet de créer des OCG (\emph{Optional
+  Content Group}) dans les documents PDF.
 
-Chaque OCG regroupe du contenu \TeX{} dans une couche de la page
-courante. Chacune de ces couches peut être afficher ou non. Des liens
+Chaque OCG regroupe du contenu \TeX{} dans une couche du fichier
+PDF. Chacune de ces couches peut être afficher ou non. Des liens
 permettent d'activer ou de désactiver l'affichage des OCG.
 
-Contrairement à la plupart des autres packages qui créent des OCG,
-\code+ocgx+ n'utilise pas de code Javascript embarqué dans le document
-PDF. Il est donc utilisable avec de plus nombreux outils de
-visualisation PDF (à ce jour, nous avons pu tester avec succès
-\emph{Acrobat Reader}, \emph{Foxit Reader} et \emph{evince}).
+L'intérêt du package \code+ocgx+ est de ne pas utiliser de code
+Javascript embarqué dans le document PDF pour activer ou désactiver les
+OCG. Il est donc utilisable avec de plusieurs outils de visualisation
+PDF (à ce jour, nous avons pu tester avec succès \emph{Acrobat Reader},
+\emph{Foxit Reader} et \emph{evince}).
 
 \section{Utilisation}
 
@@ -74,96 +79,118 @@ Voici un exemple simple.
 \TeXexample{ocgx-example-1.tex}{}
 
 Ce document crée un OCG nommé \emph{ocg1} contenant le texte \og
-\emph{first example1.} \fg{} qui est visible par défaut. Vous pouvez
+\emph{first example.} \fg{} qui est visible par défaut. Vous pouvez
 afficher ou cacher cet OCG en cliquant sur le lien \og \emph{Button.}
 \fg{}.
 
 \subsection{La création des OCG}
 
-\DescribeMacro{\OCG}%
-\DescribeMacro{\OCG*}%
-La macro \code+\OCG+ requiert deux arguments. Le premier argument est le
-nom de l'OCG à créer et le second est tout le matériel \TeX{} à placer
-dans cet OCG. Le groupe est visible par défaut. La version étoilée crée
-un groupe invisible par défaut.
+\DescribeEnv{ocg}%
+L'environnement \code+ocg+ (fourni par le package \code+ocg+) requiert
+trois arguments. Le premier argument est le nom de l'OCG tel qu'il
+apparaîtra dans le viewer PDF. Le second est le nom interne utilisé pour
+référencer cet OCG. Le troisième est un flag qui indique si l'OCG doit
+être visible ou non (1 pour oui, 0 pour non).  Le contenu de
+l'environnement est tout le matériel \TeX{} à placer dans cet OCG.
 
-Le code suivant crée un OCG nommé \emph{nomocg} avec comme contenu le
-texte \emph{contenu de l'ocg}. Ce groupe sera visible par défaut :
+Le code suivant crée un OCG nommé \emph{Nom OCG} ayant comme référence
+interne \emph{refocg} et avec comme contenu le texte \emph{contenu de
+  l'ocg}. Ce groupe sera visible (le troisième argument est 1).
 
 \begin{lstlisting}[style=TeXcode]
-  \OCG{nomocg}{contenu de l'ocg}
+  \begin{ocg}{Nom OCG}{refocg}{1}
+    contenu de l'ocg
+  \end{ocg}
 \end{lstlisting}
 
-\textbf{Note :} le contenu d'un OCG ne doit pas s'étendre sur plusieurs
-pages. Actuellement, rien n'empêche de le faire mais le résultat obtenu
-ne sera certainement pas celui que vous attendez !
+\begin{note}
+  la référence d'un OCG est constituée de lettres (A-Z, a-z), de
+  chiffres (0-9) et éventuellement du caractère \code+@+.
+\end{note}
+
+\begin{note}
+  le contenu d'un OCG ne doit pas s'étendre sur plusieurs
+  pages. Actuellement, rien n'empêche de le faire mais le résultat
+  obtenu ne sera certainement pas celui que vous attendez !
+\end{note}
+
+\begin{note}
+  il est possible d'imbriquer un OCG dans un autre OCG. Pour que l'OCG
+  interne soit réllement visible, il faut qu'il soit dans l'état visible
+  et que l'OCG englobant le soit aussi.
+\end{note}
+
+\begin{note}
+  on peut réutiliser plusieurs fois la même référence pour regrouper de
+  nombreux éléments (pas nécessairement dans la même page) dans un seul
+  OCG. Seul le premier nom fourni sera utilisé.
+\end{note}
+
+\begin{note}
+  Le package \code+ocg+ écrit par Michael Ritzert n'a pas réellement de
+  documentation. À ma connaissance, la seule \og \emph{documentation}
+  \fg{} de ce package est proposée sur le weblog du site TeXample.net :
+  \url{http://www.texample.net/weblog/2008/nov/02/creating-pdf-layers/}.
+\end{note}
 
 \subsection{La gestion de la visibilité des OCG}
 
-\textbf{Note 1:} les macros suivantes utilisent une ou plusieurs listes
-de noms d'OCG. Les noms des différents OCG sont séparés par des
-espaces. Si le nom d'un OCG contient lui-même un espace, il faudra
-entourer ce nom par des accolades.
-
-\textbf{Note 2:} les liens créés par toutes ces macros sont placés dans
-une \code+\hbox+. Ils ne peuvent pas donc s'étendre sur plusieurs lignes.
-
-\textbf{Note 3:} un OCG doit être créé \emph{avant} de pouvoir être
-utilisé par l'une des macros suivantes.
+\begin{note}
+  les liens créés par toutes ces macros sont placés dans une
+  \code+\hbox+. Ils ne peuvent pas donc s'étendre sur plusieurs lignes.
+\end{note}
 
 \DescribeMacro{\switchOCG}%
 La macro \code+\switchOCG+ transforme son second argument en un lien
-cliquable qui basculera l'état de visibilité de tous les OCG listés dans
-son premier argument (si un OCG était visible, il deviendra invisible
-et, inversement, si un OCG était invisible, il deviendra visible).
+cliquable qui basculera l'état de visibilité de tous les OCG listés (par
+leur référence) dans son premier argument : si un OCG était visible, il
+deviendra invisible et, inversement, si un OCG était invisible, il
+deviendra visible.
 
 Le code suivant crée le lien \emph{bascule} qui basculera l'état des OCG
-nommés \emph{ocg1} et \emph{ocg3} ainsi que de l'OCG nommé \emph{ocg
-  avec espace} (son nom contient des espaces) :
+dont les références sont \emph{ocg1} et \emph{ocg2} :
+
 \begin{lstlisting}[style=TeXcode]
-  \switchOCG{ocg1 {ocg avec espace} ocg3}{bascule}
+  \switchOCG{ocg1 ocg2}{bascule}
 \end{lstlisting}
 
 \DescribeMacro{\showOCG}%
 La macro \code+\showOCG+ transforme son second argument en un lien
-cliquable qui rendra visibles tous les OCG listés dans son premier
-argument (un OCG invisible deviendra visible et un OCG déjà visible le
-restera).
+cliquable qui rendra visibles tous les OCG dont les références sont
+listées dans son premier argument : un OCG invisible deviendra visible
+et un OCG déjà visible le restera.
 
 Le code suivant crée le lien \emph{voir} qui rendra visibles les OCG
-nommés \emph{ocg1} et \emph{ocg3} ainsi que de l'OCG nommé \emph{ocg
-  avec espace} (son nom contient des espaces) :
+nommés \emph{ocg1} et \emph{ocg2} :
 \begin{lstlisting}[style=TeXcode]
-  \showOCG{ocg1 {ocg avec espace} ocg3}{voir}
+  \showOCG{ocg1 ocg2}{voir}
 \end{lstlisting}
 
 \DescribeMacro{\hideOCG}%
 La macro \code+\hideOCG+ transforme son second argument en un lien
-cliquable qui rendra invisibles tous les OCG listés dans son premier
-argument (un OCG visible deviendra invisible et un OCG déjà invisible le
-restera).
+cliquable qui rendra invisibles tous les OCG dont les références sont
+listées dans son premier argument : un OCG visible deviendra invisible
+et un OCG déjà invisible le restera.
 
 Le code suivant crée le lien \emph{cacher} qui rendra invisibles les OCG
-nommés \emph{ocg1} et \emph{ocg3} ainsi que de l'OCG nommé \emph{ocg
-  avec espace} (son nom contient des espaces) :
+nommés \emph{ocg1} et \emph{ocg2} :
 \begin{lstlisting}[style=TeXcode]
-  \hideOCG{ocg1 {ocg avec espace} ocg3}{cacher}
+  \hideOCG{ocg1 ocg2}{cacher}
 \end{lstlisting}
 
 \DescribeMacro{\actionsOCG}%
 La macro \code+\actionsOCG+ transforme son quatrième argument en un lien
-cliquable. Les trois premiers arguments sont des listes d'OCG. La
-première liste contient les noms des OCG dont il faut basculer l'état de
-visibilité. La seconde liste contient les noms des OCG qu'il faudra
-rendre visibles et la troisième liste contient les noms des OCG qu'il
-faudra rendre invisibles.
+cliquable. Les trois premiers arguments sont des listes de références
+d'OCG. La première liste contient les références des OCG dont il faut
+basculer l'état de visibilité. La seconde liste contient les références
+des OCG qu'il faudra rendre visibles et la troisième liste contient les
+références des OCG qu'il faudra rendre invisibles.
 
 Le code suivant crée le lien \emph{actions} qui basculera l'état de
 visibilité de l'OCG nommé \emph{ocg1}, qui rendra visible l'OCG nommé
-\emph{ocg3} et qui rendre invisible l'OCG nommé \emph{ocg avec espace}
-(son nom contient des espaces) :
+\emph{ocg3} et qui rendre invisible l'OCG nommé \emph{ocg2} :
 \begin{lstlisting}[style=TeXcode]
-  \actionsOCG{ocg1}{ocg3}{{ocg avec espace}}{actions}
+  \actionsOCG{ocg1}{ocg3}{ocg2}{actions}
 \end{lstlisting}
 
 \section{Usage combiné avec \TikZ{}}
@@ -184,18 +211,18 @@ dans votre préambule:
 
 Ce style transforme le chemin ou le n\oe{}ud courant en un lien
 fonctionnant comme celui de la macro \code+\switchOCG+ (l'état de
-visibilité des OCG listés est inversé).
+visibilité des OCG référencés est inversé).
 
 \noindent\style+/tikz/show OCG+\argument{=\{\emph{<liste d'OCG>}\}}
 
 Ce style transforme le chemin ou le n\oe{}ud courant en un lien
-fonctionnant comme celui de la macro \code+\showOCG+ (les OCG listés
+fonctionnant comme celui de la macro \code+\showOCG+ (les OCG référencés
 sont rendus visibles).
 
 \noindent\style+/tikz/hide OCG+\argument{=\{\emph{<liste d'OCG>}\}}
 
 Ce style transforme le chemin ou le n\oe{}ud courant en un lien
-fonctionnant comme celui de la macro \code+\hideOCG+ (les OCG listés
+fonctionnant comme celui de la macro \code+\hideOCG+ (les OCG référencés
 sont rendus invisibles).
 
 \noindent\style+/tikz/actions OCG+\argument{=\{\emph{<liste d'OCG>}\}\{\emph{<liste d'OCG>}\}\{\emph{<liste d'OCG>}\}}
@@ -213,14 +240,21 @@ fonctionnant comme celui de la macro \code+\switchOCG+ (l'état de
 visibilité des OCG listés est inversé).
 
 Une marque (actuellement une simple croix) est dessinée par dessus le
-chemin ou le noeud courant dans un OCG dont le nom est
+chemin ou le noeud courant dans un OCG dont la référence est
 \code+checkbox@<basename>+. La visibilité de ce nouvel OCG sera inversé
 en même temps que ceux de toute la liste.
 \end{list}
 
-\textbf{Note:} Quelle que soit la forme du chemin ou du n\oe{}ud
-courant, c'est sa \emph{bounding box} qui est utilisée pour fabriquer le
-lien (le lien est donc toujours rectangulaire).
+\begin{note}
+  Quelle que soit la forme du chemin ou du n\oe{}ud courant, c'est sa
+  \emph{bounding box} qui est utilisée pour fabriquer le lien (le lien
+  est donc toujours rectangulaire et horizontal).
+\end{note}
+
+\section{Exemple}
+
+Le document \code+demo-ocgx.tex+ propose plusieurs exemples
+d'utilisation du package \code+ocgx+ avec \TikZ{}.
 
 \section{Limitations et bugs}
 
@@ -229,7 +263,7 @@ Voici quelques-unes des limitations et des bugs de la version actuelle:
 \item Les liens sont toujours des rectangles \emph{horizontaux}!
 \item Les OCG qui s'étendent sur plusieurs pages ne sont pas détectés
   mais ne fonctionnent pas correctement.
-\item La liste des OCG créés par \code+ocgx+ est vue par les
+\item La liste des OCG créés par \code+ocg+ est vue par les
   visualisateurs PDF comme une liste à plat. Leur éventuelle hiérarchie
   n'est pas affichée.
 \item Un OCG doit être créé \emph{avant} son utilisation dans un lien.
@@ -240,11 +274,6 @@ Voici quelques-unes des limitations et des bugs de la version actuelle:
 \item La documentation ne montre pas d'exemple avec Plain-\TeX{}.
 \item Le package n'est pas encore disponible sur CTAN.
 \end{enumerate}
-
-\section{Exemple}
-
-Le document \code+demo-ocgx.tex+ propose plusieurs exemples
-d'utilisation du package \code+ocgx+ avec \TikZ{}.
 
 \section{Distribution}
 

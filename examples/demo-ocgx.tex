@@ -3,7 +3,6 @@
 \usepackage{lmodern}
 \usepackage{tikz}
 \usetikzlibrary{backgrounds,fit,calc,shadows,chains,ocgx}
-\usepackage{ocgx}
 \usepackage{microtype}
 \usepackage{url}
 
@@ -36,15 +35,14 @@
   \def\mylist{red/0,yellow/60,green/120,cyan/180,blue/240,magenta/300}
   \centering\begin{tikzpicture}[line width=1pt]
     \begin{scope}
-      \foreach \col/\angle in \mylist
-      {
+      \foreach \col/\angle in \mylist {
         \colorlet{rgb \col}[rgb]{\col}
         \draw  (\angle:5mm) circle [radius=10mm];
         \begin{pgfonlayer}{background}
-          \OCG{t1\col}{
+          \begin{ocg}{T1 \col}{t1\col}{1}
             \fill[fill=rgb \col,fill opacity=.5]
             (\angle:5mm) circle [radius=10mm];
-          }
+          \end{ocg}
         \end{pgfonlayer}
         
         % \begin{pgfonlayer}{background}
@@ -58,15 +56,14 @@
       }
     \end{scope}
     \begin{scope}[xshift=70mm]
-      \foreach \col/\angle in \mylist
-      {
+      \foreach \col/\angle in \mylist {
         \colorlet{cmy \col}[cmyk]{\col}
         \draw  (\angle:5mm) circle [radius=10mm];
         \begin{pgfonlayer}{background}
-          \OCG{t2\col}{
+          \begin{ocg}{T2 \col}{t2\col}{1}
             \fill[fill=cmy \col,fill opacity=.5]
             (\angle:5mm) circle [radius=10mm];
-          }
+          \end{ocg}
         \end{pgfonlayer}
         \node[rounded corners=1mm,draw,line width=1pt,
         minimum size=3mm,fill=cmy \col,fill opacity=.5,
@@ -75,7 +72,7 @@
         at (\angle:20mm){};
       }
     \end{scope}
-
+    
     \begin{scope}%
       [xshift=35mm,start chain=going below,node distance=.5mm,font=\tiny]
       \node[on chain] at (0,20mm) {Toogle groups};
@@ -189,7 +186,9 @@
   \begin{frame}
     \begin{tikzpicture}[remember picture,overlay]
       \foreach \pictname/\wid/\hei in \tiles {
-        \OCG{\pictname}{\TkzTileWallPaper{\wid}{\hei}{\pictname}}
+        \begin{ocg}{\pictname}{\pictname}{1}
+          \TkzTileWallPaper{\wid}{\hei}{\pictname}
+        \end{ocg}
       }
 
     \end{tikzpicture}
@@ -252,31 +251,30 @@
 
   {\centering
     \begin{tikzpicture}
-      \OCG{protrusion}{
+      \begin{ocg}{Protrusion}{protrusion}{1}
         \microtypesetup{protrusion=true}%
-        \OCG{expansion-and-protrusion}{%
+        \begin{ocg}{Expansion and Protrusion}{expansion-and-protrusion}{1}
           \microtypesetup{expansion=true}%
           \node[sampletext]{\sampletext\par};%
-        }
+        \end{ocg}
         
-        \OCG*{no-expansion-and-protrusion}{%
+        \begin{ocg}{No Expansion and Protrusion}{no-expansion-and-protrusion}{0}
           \microtypesetup{expansion=false}%
           \node[sampletext]{\sampletext\par};%
-        }
-      }
-      
-      \OCG*{no-protrusion}{
+        \end{ocg}
+      \end{ocg}
+      \begin{ocg}{No Protrusion}{no-protrusion}{0}
         \microtypesetup{protrusion=false}%
-        \OCG{expansion-and-no-protrusion}{%
+        \begin{ocg}{Expansion and no Protrusion}{expansion-and-no-protrusion}{1}
           \microtypesetup{expansion=true}%
           \node[sampletext]{\sampletext\par};%
-        }
+        \end{ocg}
         
-        \OCG*{no-expansion-and-no-protrusion}{%
+        \begin{ocg}{No Expansion and no Protrusion}{no-expansion-and-no-protrusion}{0}
           \microtypesetup{expansion=false}%
           \node[sampletext]{\sampletext\par};%
-        }
-      }
+        \end{ocg}
+      \end{ocg}
     \end{tikzpicture}\par
   }
 
