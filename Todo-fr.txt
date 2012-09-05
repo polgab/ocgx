@@ -1,8 +1,6 @@
-Pour ocgx.tex:
+Pour ocg.sty (fourni via Asymptote):
 
-* gérer l'arborescence des OCG (celle affichée par les viewers PDF)
-
-  * pouvoir fournir un nom plus lisible que le nom interne de l'OCG.
+  * gérer l'arborescence des OCG (celle affichée par les viewers PDF)
 
   * faire en sorte qu'un sous-OCG soit dans la branche de son OCG
     contenant.
@@ -10,41 +8,45 @@ Pour ocgx.tex:
   * par défaut, produire une branche par page (mais, comment faire pour
     les OCG sur plusieurs pages ?).
 
-* détecter un changement de page à l'intérieur d'un OCG et :
+  * détecter un changement de page à l'intérieur d'un OCG et :
 
    (1) l'interdire ?
 
    (2) recréer un second groupe sur la page suivante ?
 
-   (3) créer un OCG ayant du contenu sur plusieurs pages (si c'est
-  autorisé par la norme PDF).
+   (3) créer un OCG ayant du contenu sur plusieurs pages
 
-* corriger le code modifié/ajouté par P.Gaborit pour permettre la
-  création d'un lien (en fait une annotation) *avant* la création du
-  groupe correspondant.
+   A tester car ocg.sty l'autorise peut-être...
 
-* vérifier l'emploi de \the\pageno (TeX) et \thepage (LaTeX). Ce ne sont
-  pas des compteurs absolus. Il n'y a donc pas garanti d'unicité...
+  * soumettre le patch actuellement présent au début du fichier ocgx.sty
+    pour intégration dans ocg.sty
 
-* si possible, permettre l'ajout de matériel dans un *même* groupe via
-  plusieurs appels successifs à \OCG avec le même nom de groupe (si
-  c'est faisable).
+  * créer et proposer les modifications nécessaires à l'auteur pour que
+    le code soit compatible Plain TeX
 
-* ajouter une licence, les auteurs, les dates...
+Pour ocgx.tex et ocgx.sty:
 
-* écrire une documentation d'usage et une documentation du code.
+  * recréer ocgx.tex (pour Plain TeX) une fois que ocg.sty sera
+    compatible.
 
-* en faire un package propre (.dtx,.ins,etc.).
+  * ajouter une licence, les auteurs, les dates...
 
-* le publier sur CTAN.
+  * écrire une documentation d'usage et une documentation du code en
+    anglais
+
+  * en faire un package propre (.dtx,.ins,etc.).
+
+  * le publier sur CTAN.
+
 
 Dans demo-ocgx.tex:
 
-* extraire les parties TikZ dans tikz-ocgx
+  * améliorer le code TikZ
 
-* améliorer le code TikZ
+  * simuler des annotations non rectangulaires par découpage en
+    plusieurs liens rectangulaires et horizontaux
 
-* trouver de meilleurs exemples
+  * trouver de meilleurs exemples
 
-* vérifier les droits pour les images curtain* et mosaic*
+  * vérifier les droits pour les images curtain* et mosaic*
 
