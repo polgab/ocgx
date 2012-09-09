@@ -1,0 +1,302 @@
+\documentclass[a4paper]{ltxdoc}
+\usepackage[vmargin=2cm,hmargin=3.5cm]{geometry}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{ifthen}
+\usepackage{doc}
+\usepackage{fancyvrb}
+\usepackage{newverbs}
+\usepackage{listings}
+\lstdefinestyle{TeXcode}{
+  fancyvrb=true,
+  language=[LaTeX]TeX,
+  basicstyle=\ttfamily,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{red!50!black}\itshape,
+  stringstyle=\ttfamily\color{green!50!black},
+  showspaces=false,
+  showstringspaces=false,
+  backgroundcolor=\color{white},
+  fontadjust=true,
+  aboveskip=1ex,
+  belowskip=1ex,
+  emphstyle=\color{blue}\bfseries,
+  keepspaces=true,
+  flexiblecolumns=true,
+  emph={switchOCG,showOCG,hideOCG,actionsOCG,usetikzlibrary}
+}
+\newenvironment{prog}[1]{\vspace{1ex}--- \texttt{\emph{#1}} ---}{}
+\newcommand{\TeXexample}[3][]{
+  \ifthenelse{\equal{#1}{}}{\begin{prog}{#2}}{\begin{prog}{#2 (#1)}}
+  \lstinputlisting[style=TeXcode,aboveskip=0ex,#3]{#2}
+  \end{prog}
+}
+  
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage[english]{babel}
+\usepackage{parskip}
+\usepackage{tikz}
+\usetikzlibrary{shadows}
+\usepackage[all]{nowidow}
+
+\newcounter{mynotes}
+\newenvironment{note}{%
+  \tikzpicture
+  \node[%draw=black,line width=.1pt,
+  rounded corners=1em,
+  inner xsep=1.2em, inner ysep=.7em,
+  text width=\linewidth-2.4em,
+  ,align=justify,
+  fill=cyan!5,
+  drop shadow,
+  ] (note) \bgroup%
+}{%
+  \egroup;
+  \node[circle,overlay,fill=white,draw,font=\small\bfseries,inner sep=2pt]
+  at (note.west){\stepcounter{mynotes}\arabic{mynotes}};
+  \endtikzpicture\par%
+}
+
+\newverbcommand\code{\color{red}}{}
+\newverbcommand\style{\hspace{-2em}\color{red}}{}
+\newcommand\argument[1]{\textcolor{black}{\ttfamily #1}}
+\newcommand\TikZ{Ti\emph{k}Z}
+
+\title{The \texttt{ocgx} package (version 0.1)}
+\author{%
+  Paul \textsc{Isambert}
+  \and%
+  Paul \textsc{Gaborit}\\\url{paul.gaborit@gmail.com}}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+The \code+ocgx+ package extends and documents the \code+ocg+ package
+(which comes with Asymptote) which allows you to create OCGs
+(\emph{Optional Content Group}) in PDF documents.
+
+Every OCG includes \TeX{} material into a layer of the PDF file. Each of
+these layers can be displayed or not. Links can enable or disable the
+display of OCGs.
+
+The \code+ocgx+ package does not use Javascript embedded in the PDF
+document to enable or disable OCGs. Thus, it is usable with several PDF
+readers (to date, it has been successfully tested with \emph{Acrobat
+  Reader}, \emph{Foxit Reader}, and \emph{Evince}).
+
+\section{Usage}
+
+Here is a simple example.
+
+\TeXexample{ocgx-example-1.tex}{}
+
+This document creates an OCG called \emph{ocg1} containing the text
+``\emph{first example.}''  which is visible. You can show or hide this
+OCG by clicking the link ``\emph{Button.}''.
+
+\subsection{Create OCGs}
+
+\begin{note}
+  The \code+ocg+ package written by Michael \textsc{Ritzert}
+  comes without documentation. In my knowledge, the only documentation
+  for this package (by Kjell Magne Fauske) is offered on the weblog of
+  TeXample.net:
+  \url{http://www.texample.net/weblog/2008/nov/02/creating-pdf-layers/}.
+\end{note}
+
+
+\DescribeEnv{ocg}%
+The \code+ocg+ environment (provided by the package \code+ocg+) creates
+OCGs. It requires three arguments. The first argument is the name of the
+OCG as it appears in the PDF viewer. The second argument is the internal
+name used to reference this OCG. The third argument is a flag that
+indicates whether the OCG should be visible or not (1 for visible, 0 for
+invisible). The content of the environment (any \TeX material) is added
+into the OCG.
+
+The following code creates an OCG named \emph{OCG name} with
+\emph{refocg} as internal reference. The content of this OCG is
+``\emph{content...}''. This OCG is visible (the third argument is 1).
+
+\begin{lstlisting}[style=TeXcode]
+  \begin{ocg}{OCG name}{refocg}{1}
+    content...
+  \end{ocg}
+\end{lstlisting}
+
+\begin{note}
+  A reference of an OCG consists of letters (A-Z, a-z), numbers (0-9)
+  and possibly the \code+@+ character.
+\end{note}
+
+\begin{note}
+  The content of the \code+ocg+ environment should not span across
+  multiple pages. Currently, nothing prevents you to try it but the
+  result will certainly not be the one you were expecting!
+\end{note}
+
+\begin{note}
+  It is possible to nest an OCG in another OCG. To display the internal
+  OCG, both the internal and external OCGs need to be in the visible
+  state.
+\end{note}
+
+\begin{note}
+  The same reference can be used with several \code+ocg+ environments (not
+  necessarily in the same page). All materials are grouped in the same
+  OCG. Only the first name provided will be used.
+\end{note}
+
+\subsection{Manage the visibility of OCGs}
+
+\begin{note}
+  Each link created by the following macros are placed in an
+  \code+\hbox+. Therefore, it can not extend over several lines.
+\end{note}
+
+\DescribeMacro{\switchOCG}%
+The \code+\switchOCG+ macro turns its second argument into a clickable
+link that toggles the visibility status of all listed OCGs (by their
+reference) in its first argument: if an OCG was visible, it becomes
+invisible, and conversely, if an OCG was invisible, it becomes visible.
+
+The following code creates the link \emph{toggle} that switches the
+visibility status of OCGs whose references are \emph{ocg1} and
+\emph{ocg2}:
+
+\begin{lstlisting}[style=TeXcode]
+  \switchOCG{ocg1 ocg2}{toggle}
+\end{lstlisting}
+
+\DescribeMacro{\showOCG}%
+The \code+\showOCG+ macro turns its second argument into a clickable
+link that make visible all OCGs whose references are listed in its first
+argument: an invisible OCG becomes visible and an OCG already visible
+remains visible.
+
+The following code creates the link \emph{show} which makes visible the
+OCGs whoses references are \emph{ocg1} and \emph{ocg2}:
+
+\begin{lstlisting}[style=TeXcode]
+  \showOCG{ocg1 ocg2}{show}
+\end{lstlisting}
+
+\DescribeMacro{\hideOCG}%
+The \code+\hideOCG+ macro turns its second argument into a clickable
+link that make invisible all OCGs whose references are listed in its
+first argument: a visible OCG becomes invisible and an OCG already
+invisible remains invisible.
+
+The following code creates the link \emph{hide} which makes invisible
+the OCGs whoses references are \emph{ocg1} and \emph{ocg2}:
+\begin{lstlisting}[style=TeXcode]
+  \hideOCG{ocg1 ocg2}{hide}
+\end{lstlisting}
+
+\DescribeMacro{\actionsOCG}%
+The \code+\actionsOCG+ macro transforms its fourth argument in a
+clickable link. Its three first arguments are lists of references of
+OCGs. The first list contains references of OCGs which visibility status
+is to be toggled. The second list contains references of OCGs to be set
+visible. The third list contains references of OCGs to be set invisible.
+
+The following code creates the link \emph{actions} to toggle the
+visibility status of the OCG named \emph{ocg1}, to make visible the OCG
+named \emph{ocg3}, and to make invisible OCG named \emph{ocg2}:
+
+\begin{lstlisting}[style=TeXcode]
+  \actionsOCG{ocg1}{ocg3}{ocg2}{actions}
+\end{lstlisting}
+
+\subsection{Usage with \TikZ{}}
+
+You can use the \code+ocgx+ package with \TikZ{}. The package provides a
+\TikZ{} library offering five specific styles to transform a path
+(\code+\path+ or \code+\node+) in a clickable link. To use it, simply
+add the following lines in your preamble:
+
+\begin{lstlisting}[style=TeXcode]
+  \usepackage{tikz}
+  \usetikzlibrary{ocgx}
+\end{lstlisting}
+
+\begin{list}{}
+\item
+\noindent\style+/tikz/switch OCG+\argument{=\{\emph{<OCGs list>}\}}
+
+This style transforms the path or the current node in a link acting as
+if it was produced by the macro \code+\switchOCG+ (the visibility status
+of referenced OCGs is reversed).
+
+\noindent\style+/tikz/show OCG+\argument{=\{\emph{<OCGs list>}\}}
+
+This style transforms the path or the current node in a link acting as
+if it was produced by the macro \code+\showOCG+ (the referenced OCGs are
+made visible).
+
+\noindent\style+/tikz/hide OCG+\argument{=\{\emph{<OCGs list>}\}}
+
+This style transforms the path or the current node in a link acting as
+if it was produced by the macro \code+\hideOCG+ (the referenced OCGs are
+made invisible).
+
+\noindent\style+/tikz/actions OCG+\argument{=\{\emph{<OCGs
+    list>}\}\{\emph{<OCGs list>}\}\{\emph{<OCGs list>}\}}
+
+This style transforms the path or the current node in a link acting as
+if it is produced by the macro \code+\actionsOCG+ (the visibility status
+of OCGs of the first list is reversed, the OCGs in the second list are
+made visible and those of the third list are made invisible).
+
+\noindent\style+/tikz/switch OCG with mark+\argument{=\{\emph{<basename>}\}\{\emph{<OCGs list>}\}}
+
+This style transforms the path or the current node in a link acting as
+if it is produced by the macro \code+\switchOCG+ (the visibility status
+of referenced OCGs in the list is reversed).
+
+A mark (currently a simple cross) is drawn over the current path or node
+in an OCG whose reference is \code+checkbox@basename+. The visibility
+status of this new OCG will be reversed as those of the entire list.
+\end{list}
+
+\begin{note}
+  Whatever the shape of the current path or node is, it is its
+  \emph{bounding box} that is used to make the link (the link is always
+  \emph{rectangular} and \emph{horizontal}).
+\end{note}
+
+\section{Examples}
+
+The document \code+demo-ocgx.tex+ provides several examples of usage of
+package \code+ocgx+ with \TikZ{} (and \code+beamer+).
+
+\section{Limits and bugs}
+
+\begin{enumerate}
+\item Links are always horizontal rectangles!
+\item An \code+ocg+ environment spanning across multiple pages are not
+  detected and don't work correctly.
+\item The list of OCGs created by \code+ocg+ is seen by viewers as a
+  long flat list. Their possible hierarchy is not displayed.
+\item The packages \code+ocg+ and \code+ocgx+ are not compatible with Plain-\TeX{}.
+\end{enumerate}
+
+\section{Development}
+This package is still experimental. It is released on CTAN. You can
+recover the latest version on \url{https://github.com/polgab/ocgx}. Any
+help to participate in its development is welcome. Do not hesitate to
+contact the maintener (\url{paul.gaborit@gmail.com}).
+
+\end{document}
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
