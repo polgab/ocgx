@@ -42,7 +42,7 @@
 \long\def\switchOCG#1#2{%
   \def\ocgx@list{}%
   \ocgx@listOCG#1 ENDOFOCGS %
-  \hbox{%
+  \leavevmode\hbox{%
     \pdfannot{%
       /Subtype /Link
       /A << /S/SetOCGState /State [/Toggle \ocgx@list] >>
@@ -54,7 +54,7 @@
 \long\def\showOCG#1#2{%
   \def\ocgx@list{}%
   \ocgx@listOCG#1 ENDOFOCGS %
-  \hbox{%
+  \leavevmode\hbox{%
     \pdfannot{%
     /Subtype/Link
     /A << /S/SetOCGState
@@ -67,7 +67,7 @@
 \long\def\hideOCG#1#2{%
   \def\ocgx@list{}%
   \ocgx@listOCG#1 ENDOFOCGS %
-  \hbox{%
+  \leavevmode\hbox{%
     \pdfannot{%
     /Subtype/Link
     /A << /S/SetOCGState
@@ -90,7 +90,7 @@
   \ocgx@listOCG#1 ENDOFOCGS %
   \edef\ocgx@tohide{\ocgx@list}
   %
-  \hbox{%
+  \leavevmode\hbox{%
     \pdfannot{%
     /Subtype/Link
     /A << /S/SetOCGState
