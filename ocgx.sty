@@ -44,7 +44,7 @@
 \long\def\switchocg#1#2{%
   \def\ocgx@list{}%
   \ocgx@listOCG#1 ENDOFOCGS %
-  \leavevmode%\hbox{%
+  \leavevmode%
   \pdfstartlink user {%
     /Subtype /Link
     /A << /S/SetOCGState /State [/Toggle \ocgx@list] >>
@@ -56,7 +56,7 @@
 \long\def\showocg#1#2{%
   \def\ocgx@list{}%
   \ocgx@listOCG#1 ENDOFOCGS %
-  \leavevmode%\hbox{%
+  \leavevmode%
   \pdfstartlink user {%
     /Subtype/Link
     /A << /S/SetOCGState
@@ -69,7 +69,7 @@
 \long\def\hideocg#1#2{%
   \def\ocgx@list{}%
   \ocgx@listOCG#1 ENDOFOCGS %
-  \leavevmode%\hbox{%
+  \leavevmode%
   \pdfstartlink user {%
     /Subtype/Link
     /A << /S/SetOCGState
@@ -79,20 +79,20 @@
   #2\pdfendlink%
 }
 
-\long\def\actionsocg#1#2#3#4{
+\long\def\actionsocg#1#2#3#4{%
   \def\ocgx@list{}%
   \ocgx@listOCG#1 ENDOFOCGS %
-  \edef\ocgx@toswitch{\ocgx@list}
-  %
+  \edef\ocgx@toswitch{\ocgx@list}%
+  % 
   \def\ocgx@list{}%
   \ocgx@listOCG#1 ENDOFOCGS %
-  \edef\ocgx@toshow{\ocgx@list}
-  %
+  \edef\ocgx@toshow{\ocgx@list}%
+  % 
   \def\ocgx@list{}%
   \ocgx@listOCG#1 ENDOFOCGS %
-  \edef\ocgx@tohide{\ocgx@list}
-  %
-  \leavevmode%\hbox{%
+  \edef\ocgx@tohide{\ocgx@list}%
+  % 
+  \leavevmode%
   \pdfstartlink user{%
     /Subtype/Link
     /A << /S/SetOCGState
@@ -100,4 +100,4 @@
     /Border [0 0 0]
   }%
   #4\pdfendlink%
- }
+}
