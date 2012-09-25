@@ -6,7 +6,7 @@
 % called from the aux file
 \def\@ocg@makeknown#1#2#3{% #1: OCG name, #2: OC id, #3: on/off
    \@ifundefined{OCG#2}{%
-      \message{OCG#2}
+      \message{OCG#2}%
       \expandafter\gdef\csname OCG#2\endcsname{#1}%
       \immediate\pdfobj{<< /Type /OCG /Name (#1) >>}% new ocg
       \xdef\@ocg@curocg{\the\pdflastobj\space 0 R}% reference to id
@@ -23,9 +23,9 @@
          \@ocg@layersnames\space/OC#2\space\@ocg@curocg% name-to-id mapping
       }%
    }{%
-      \message{OCG#2 reopened}
+      \message{OCG#2 reopened}%
       % layer reopened
-   }
+   }%
 }
 %%%% END OF PATCH %%%%
 
