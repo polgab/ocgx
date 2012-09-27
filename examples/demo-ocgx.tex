@@ -1,9 +1,17 @@
-\documentclass[11pt]{beamer}
-\usetheme{Warsaw}
+% Copyright (C) 2012 by Paul Gaborit
+%
+% This file may be distributed and/or modified
+%
+% 1. under the LaTeX Project Public License and/or
+% 2. under the GNU Public License.
+
+\documentclass[11pt,hyperref={colorlinks=false,runcolor=blue}]{beamer}
+%\usetheme{Warsaw}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{tikz}
 \usetikzlibrary{backgrounds,fit,calc,shadows,chains,ocgx}
+\usepgflibrary{shapes.geometric}
 \usepackage{microtype}
 \usepackage{url}
 \usepackage{fancyvrb}
@@ -24,7 +32,7 @@
   emphstyle=\color{blue}\bfseries,
   keepspaces=true,
   flexiblecolumns=true,
-  emph={switchOCG,showOCG,hideOCG,actionsOCG,usetikzlibrary}
+  emph={switchocg,showocg,hideocg,actionsocg,usetikzlibrary}
 }
 \newcommand\TkzTileWallPaper[3]{
   \pgfmathtruncatemacro{\nx}{\paperwidth/#1}
@@ -42,9 +50,11 @@
 
 \newcommand\latex{{\rmfamily\LaTeX}}
 
+\newcommand{\TikZ}{Ti\emph{k}Z}
+
 \begin{document}
 \begin{frame}[fragile]
-  \frametitle{\latex,OCG \& Ti\emph{k}Z (without JavaScript): \texttt{ocgx} package}
+  \frametitle{\latex{}, OCG \& \TikZ{}  (without JavaScript): \texttt{ocgx} package}
   \framesubtitle{by Paul \textsc{Gaborit} wiht help of Paul
     \textsc{Isambert}}
 
@@ -53,25 +63,91 @@
     \emph{Foxit Reader} or \emph{evince}!
   \end{alertblock}
 
-  \begin{block}{Simple example: code}
+  \begin{columns}
+
+    \column{.6\linewidth}
+
+    \begin{block}{Simple example: code}
     \begin{lstlisting}[style=TeXcode]
 \begin{ocg}{My first OCG}{refmyfirstocg}{1}
    Some content...
 \end{ocg}
 
-\switchOCG{refmyfirstocg}{Click me!}
+\switchocg{refmyfirstocg}%
+{\textcolor{red}{Click me!}}
 \end{lstlisting}
-  \end{block}
+    \end{block}
 
-  \begin{block}{Simple example: result}
+    \column{.4\linewidth}
     
-    \begin{ocg}{My first OCG}{refmyfirstocg}{1}
-      Some content...
-    \end{ocg}
-    
-    \switchOCG{refmyfirstocg}{Click me!}
+    \begin{block}{Simple example: result}
+      
+      \begin{ocg}{My first OCG}{refmyfirstocg}{1}
+        Some content...
+      \end{ocg}
+      
+      \switchocg{refmyfirstocg}%
+      {\textcolor{red}{Click me!}}
+      
+    \end{block}
+  \end{columns}
 
-  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{First example with Ti\emph{k}Z}
+  
+  {\centering
+  \begin{tikzpicture}[font=\small]
+    \begin{scope}[ocg={ref=toto,status=visible,name=ok}]
+      \fill[orange] circle(10pt);
+      \node[draw,rounded corners,hide ocg=toto] at (0,-1) {Hide};
+      \node[draw,rounded corners,switch ocg=toto] at (2,-1) {Switch};
+    \end{scope}
+    \node[show ocg=toto,text=red] at (0,-2) {Show};
+  \end{tikzpicture}\par}
+
+  \begin{itemize}
+  \item \switchocg{toto}{\Large \textcolor{red}{A very long phrase to
+        show that a link can be on multiple lines\ldots}\par\textcolor{red}{And with two
+        paragraphs!}}
+  \item The ``Switch'' button is \textbf{always} useable!
+  \end{itemize}
+\end{frame}
+
+\tikzset{%
+  button on/.style={%
+    draw,circle,drop shadow,
+    line width=1pt,
+    fill=lime!50,
+    switch ocg with mark on={#1}{},
+  },
+}
+\begin{frame}
+  \frametitle{An ordered stack}
+  
+  \centering
+  \begin{tikzpicture}
+    \foreach \col[count=\c] in {red,orange,yellow,lime,cyan,blue,violet}{
+      \pgfmathtruncatemacro{\num}{mod(\c+1,2)+1}
+      \pgfmathsetmacro{\rad}{8-\c}
+      \begin{scope}[xshift=-.3*\c cm,ocg={name=s\num,ref=s\num}]
+        \node[ellipse,draw,line width=1pt,
+        minimum width=1.1*\rad cm,minimum height=.9*\rad cm,
+        fill=\col!70,drop shadow={fill=black}](t){};
+        \node[left=3pt of t.east,fill=white,
+        fill opacity=.5,text opacity=1,circle,inner sep=0pt]{S\num};
+      \end{scope}
+    }
+  \end{tikzpicture}
+
+  \begin{tikzpicture}
+    \node[button on=s1](but){};
+    \node[right=0 of but]{Switch S1};
+    \node[below=3pt of but,button on=s2](but){};
+    \node[right=0 of but]{Switch S2};
+  \end{tikzpicture}
+
 \end{frame}
 
 \begin{frame}
@@ -84,18 +160,18 @@
       \foreach \col/\angle in \mylist {
         \colorlet{rgb \col}[rgb]{\col}
         \draw  (\angle:5mm) circle [radius=10mm];
-        \begin{pgfonlayer}{background}
-          \begin{ocg}{T1 \col}{t1\col}{1}
+        \begin{scope}[on background layer]
+          \begin{scope}[ocg={ref=RGB\col,name=RGB \col}]
             \fill[fill=rgb \col,fill opacity=.5]
             (\angle:5mm) circle [radius=10mm];
-          \end{ocg}
-        \end{pgfonlayer}
+          \end{scope}
+        \end{scope}
         
         \node[rounded corners=1mm,draw,line width=1pt,
         minimum size=3mm,fill=rgb \col,fill opacity=.5,
         drop shadow,
         inner sep=0,inner xsep=0,
-        switch OCG with mark={t1\col}{t1\col}]
+        switch ocg with mark on={RGB\col}{}]
         at (\angle:20mm){};
       }
     \end{scope}
@@ -104,16 +180,17 @@
       \foreach \col/\angle in \mylist {
         \colorlet{cmy \col}[cmyk]{\col}
         \draw  (\angle:5mm) circle [radius=10mm];
-        \begin{pgfonlayer}{background}
-          \begin{ocg}{T2 \col}{t2\col}{1}
+        \begin{scope}[on background layer]
+          \begin{scope}[ocg={ref=CMY\col,name=CMY \col}]
             \fill[fill=cmy \col,fill opacity=.5]
             (\angle:5mm) circle [radius=10mm];
-          \end{ocg}
-        \end{pgfonlayer}
+          \end{scope}
+        \end{scope}
+      
         \node[rounded corners=1mm,draw,line width=1pt,
         minimum size=3mm,fill=cmy \col,fill opacity=.5,
         drop shadow,inner sep=0,outer sep=0,
-        switch OCG with mark={t2\col}{t2\col}]
+        switch ocg with mark on={CMY\col}{}]
         at (\angle:20mm){};
       }
     \end{scope}
@@ -124,55 +201,27 @@
       \node%
       [on chain,draw,rounded corners=1mm,fill=white,drop shadow,
       minimum size=3mm,inner sep=1mm,
-      switch OCG={%
-        t1red checkbox@t1red %
-        t1blue checkbox@t1blue %
-        t1green checkbox@t1green %
-        t2red checkbox@t2red %
-        t2blue checkbox@t2blue %
-        t2green checkbox@t2green%
-      },
+      switch ocg={RGBred RGBblue RGBgreen CMYred CMYblue CMYgreen},
       ]
       {red, green, blue};
       \node%
       [on chain,draw,rounded corners=1mm,fill=white,drop shadow,
       minimum size=3mm,inner sep=1mm,
-      switch OCG={%
-        t1yellow checkbox@t1yellow %
-        t1cyan checkbox@t1cyan %
-        t1magenta checkbox@t1magenta %
-        t2yellow checkbox@t2yellow %
-        t2cyan checkbox@t2cyan %
-        t2magenta checkbox@t2magenta%
-      },
+      switch ocg={RGByellow RGBcyan RGBmagenta CMYyellow CMYcyan CMYmagenta},
       ]
       {cyan, magenta, yellow};
-
+      
       \node[on chain] {Show groups};
       \node%
       [on chain,draw,rounded corners=1mm,fill=white,drop shadow,
       minimum size=3mm,inner sep=1mm,
-      show OCG={%
-        t1red checkbox@t1red %
-        t1blue checkbox@t1blue %
-        t1green checkbox@t1green %
-        t2red checkbox@t2red %
-        t2blue checkbox@t2blue %
-        t2green checkbox@t2green%
-      },
+      show ocg={RGBred RGBblue RGBgreen CMYred CMYblue CMYgreen},
       ]
       {red, green, blue};
       \node%
       [on chain,draw,rounded corners=1mm,fill=white,drop shadow,
       minimum size=3mm,inner sep=1mm,
-      show OCG={%
-        t1yellow checkbox@t1yellow %
-        t1cyan checkbox@t1cyan %
-        t1magenta checkbox@t1magenta %
-        t2yellow checkbox@t2yellow %
-        t2cyan checkbox@t2cyan %
-        t2magenta checkbox@t2magenta%
-      },
+      show ocg={RGByellow RGBcyan RGBmagenta CMYyellow CMYcyan CMYmagenta},
       ]
       {cyan, magenta, yellow};
 
@@ -180,27 +229,13 @@
       \node%
       [on chain,draw,rounded corners=1mm,fill=white,drop shadow,
       minimum size=3mm,inner sep=1mm,
-      hide OCG={%
-        t1red checkbox@t1red %
-        t1blue checkbox@t1blue %
-        t1green checkbox@t1green %
-        t2red checkbox@t2red %
-        t2blue checkbox@t2blue %
-        t2green checkbox@t2green%
-      },
+      hide ocg={RGBred RGBblue RGBgreen CMYred CMYblue CMYgreen},
       ]
       {red, green, blue};
       \node%
       [on chain,draw,rounded corners=1mm,fill=white,drop shadow,
       minimum size=3mm,inner sep=1mm,
-      hide OCG={%
-        t1yellow checkbox@t1yellow %
-        t1cyan checkbox@t1cyan %
-        t1magenta checkbox@t1magenta %
-        t2yellow checkbox@t2yellow %
-        t2cyan checkbox@t2cyan %
-        t2magenta checkbox@t2magenta%
-      },
+      hide ocg={RGByellow RGBcyan RGBmagenta CMYyellow CMYcyan CMYmagenta},
       ]
       {cyan, magenta, yellow};
     \end{scope}
@@ -231,9 +266,9 @@
   \begin{frame}
     \begin{tikzpicture}[remember picture,overlay]
       \foreach \pictname/\wid/\hei in \tiles {
-        \begin{ocg}{\pictname}{\pictname}{1}
+        \begin{scope}[ocg={name=\pictname,ref=\pictname}]
           \TkzTileWallPaper{\wid}{\hei}{\pictname}
-        \end{ocg}
+        \end{scope}
       }
 
     \end{tikzpicture}
@@ -244,16 +279,18 @@
       on chain,
       rounded corners=2mm]
       {{\huge\name}\\\url{\link}\\(\latex{} \url{\ltxlink})};
+
       \foreach \pictname/\wid/\hei in \tiles {
+
         \node[on chain,text=white,fill=black,fill opacity=.5,text opacity=1,
         text width=3cm,align=center,font=\bfseries]
-        (a)
-        {\hspace{5mm}\pictname};
+        (a) {\hspace{5mm}\pictname};
+
         \node[rounded corners=1mm,draw,line width=1pt,%
         minimum size=3mm,top color=white,bottom color=black,
         fill opacity=.5,
         drop shadow={fill=black},
-        switch OCG with mark={\pictname}{\pictname}]
+        switch ocg with mark on={\pictname}{}]
         at ([xshift=3mm,yshift=.5mm]a.west) {};
         
       }
@@ -287,7 +324,7 @@
     sampletext/.style={
       text width=8cm,align=justify,
       font=\small,
-      fill=black!5,
+      fill=yellow!20,
       inner xsep=1.5cm,
       inner ysep=1cm,
       draw=gray,
@@ -296,46 +333,41 @@
 
   {\centering
     \begin{tikzpicture}
-      \begin{ocg}{Protrusion}{protrusion}{1}
+      \begin{scope}[ocg={name=With Protrusion,ref=protrusion}]
         \microtypesetup{protrusion=true}%
-        \begin{ocg}{Expansion and Protrusion}{expansion-and-protrusion}{1}
+        \begin{scope}[ocg={name=With Expansion,ref=expansion}]
           \microtypesetup{expansion=true}%
           \node[sampletext]{\sampletext\par};%
-        \end{ocg}
+        \end{scope}
         
-        \begin{ocg}{No Expansion and Protrusion}{no-expansion-and-protrusion}{0}
+        \begin{scope}[ocg={name=Without Expansion,status=invisible,ref=no-expansion}]
           \microtypesetup{expansion=false}%
           \node[sampletext]{\sampletext\par};%
-        \end{ocg}
-      \end{ocg}
-      \begin{ocg}{No Protrusion}{no-protrusion}{0}
+        \end{scope}
+      \end{scope}
+      
+      \begin{scope}[ocg={name=Without Protrusion,status=invisible,ref=no-protrusion}]
         \microtypesetup{protrusion=false}%
-        \begin{ocg}{Expansion and no Protrusion}{expansion-and-no-protrusion}{1}
+        \begin{scope}[ocg={name=With Expansion,ref=expansion}]
           \microtypesetup{expansion=true}%
           \node[sampletext]{\sampletext\par};%
-        \end{ocg}
+        \end{scope}
         
-        \begin{ocg}{No Expansion and no Protrusion}{no-expansion-and-no-protrusion}{0}
+        \begin{scope}[ocg={name=Without Expansion,status=invisible,ref=no-expansion}]
           \microtypesetup{expansion=false}%
           \node[sampletext]{\sampletext\par};%
-        \end{ocg}
-      \end{ocg}
+        \end{scope}
+      \end{scope}
     \end{tikzpicture}\par
   }
 
   Microtype :
   \begin{tikzpicture}
-    \node[checkbox,
-    switch OCG with mark={protrusion}{protrusion no-protrusion}]
-    {};
-  \end{tikzpicture} protrusion 
+    \node[checkbox,switch ocg with mark on={protrusion}{no-protrusion}]{};
+  \end{tikzpicture} with protrusion 
   \begin{tikzpicture}
-    \node[checkbox,
-    switch OCG with mark={expansion}%
-    {expansion-and-protrusion no-expansion-and-protrusion
-      expansion-and-no-protrusion no-expansion-and-no-protrusion}]
-    {};
-  \end{tikzpicture} expansion
+    \node[checkbox,switch ocg with mark on={expansion}{no-expansion}]{};
+  \end{tikzpicture} with expansion
   
 \end{frame}
 \end{document}

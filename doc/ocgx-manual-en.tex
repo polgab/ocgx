@@ -1,9 +1,15 @@
+% Copyright (C) 2012 by Paul Gaborit
+%
+% This file may be distributed and/or modified
+%
+% 1. under the LaTeX Project Public License and/or
+% 2. under the GNU Public License.
+
 \documentclass[a4paper]{ltxdoc}
 \usepackage[vmargin=2cm,hmargin=3.5cm]{geometry}
 \usepackage[latin1]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
-\usepackage{microtype}
 \usepackage{xcolor}
 \usepackage{ifthen}
 \usepackage{doc}
@@ -19,7 +25,7 @@
   stringstyle=\ttfamily\color{green!50!black},
   showspaces=false,
   showstringspaces=false,
-  backgroundcolor=\color{white},
+  backgroundcolor=\color{cyan!10},
   fontadjust=true,
   aboveskip=1ex,
   belowskip=1ex,
@@ -36,37 +42,48 @@
 }
   
 \usepackage{url}
-\usepackage{hyperref}
+\usepackage[colorlinks]{hyperref}
 \usepackage[english]{babel}
+\usepackage[babel]{microtype}
 \usepackage{parskip}
 \usepackage{tikz}
 \usetikzlibrary{shadows}
 \usepackage[all]{nowidow}
+\usepackage{ocgx}
 
 \newcounter{mynotes}
 \newenvironment{note}{%
   \tikzpicture
   \node[%draw=black,line width=.1pt,
   rounded corners=1em,
-  inner xsep=1.2em, inner ysep=.7em,
-  text width=\linewidth-2.4em,
-  ,align=justify,
-  fill=cyan!5,
-  drop shadow,
+  inner xsep=1.3em, inner ysep=.8em,
+  text width=\linewidth-2.6em-\pgflinewidth,
+  align=justify,
+  draw=cyan!50!black,
+  fill=white,
+  fill=yellow!20,
+  line width=1pt,
+  drop shadow={fill=cyan!50!black},
   ] (note) \bgroup%
 }{%
   \egroup;
-  \node[circle,overlay,fill=white,draw,font=\small\bfseries,inner sep=2pt]
-  at (note.west){\stepcounter{mynotes}\arabic{mynotes}};
-  \endtikzpicture\par%
+  \node[circle,overlay,
+  %fill=white,draw=cyan!50!black,
+  draw=white,fill=cyan!50!black,text=white,
+  line width=2pt,
+  drop shadow={fill=cyan!50!black},
+  font=\small\bfseries,inner sep=4pt]
+  at (note.north west){\stepcounter{mynotes}\arabic{mynotes}};
+  \endtikzpicture\par\vspace{.1em}%
 }
+
 
 \newverbcommand\code{\color{red}}{}
 \newverbcommand\style{\hspace{-2em}\color{red}}{}
 \newcommand\argument[1]{\textcolor{black}{\ttfamily #1}}
 \newcommand\TikZ{Ti\emph{k}Z}
 
-\title{The \texttt{ocgx} package (version 0.1)}
+\title{The \texttt{ocgx} package (version \ocgxversion)}
 \author{%
   Paul \textsc{Isambert}
   \and%
@@ -102,9 +119,9 @@ OCG by clicking the link ``\emph{Button.}''.
 \subsection{Create OCGs}
 
 \begin{note}
-  The \code+ocg+ package written by Michael \textsc{Ritzert}
-  comes without documentation. In my knowledge, the only documentation
-  for this package (by Kjell Magne Fauske) is offered on the weblog of
+  The \code+ocg+ package written by Michael \textsc{Ritzert} comes
+  without documentation. In my knowledge, the only documentation for
+  this package is offered (by Kjell Magne Fauske) on the weblog of
   TeXample.net:
   \url{http://www.texample.net/weblog/2008/nov/02/creating-pdf-layers/}.
 \end{note}
@@ -130,6 +147,12 @@ The following code creates an OCG named \emph{OCG name} with
 \end{lstlisting}
 
 \begin{note}
+  The same reference can be used with several \code+ocg+ environments (not
+  necessarily in the same page). All materials are grouped in the same
+  OCG. Only the first name provided will be used.
+\end{note}
+
+\begin{note}
   A reference of an OCG consists of letters (A-Z, a-z), numbers (0-9)
   and possibly the \code+@+ character.
 \end{note}
@@ -146,21 +169,10 @@ The following code creates an OCG named \emph{OCG name} with
   state.
 \end{note}
 
-\begin{note}
-  The same reference can be used with several \code+ocg+ environments (not
-  necessarily in the same page). All materials are grouped in the same
-  OCG. Only the first name provided will be used.
-\end{note}
-
 \subsection{Manage the visibility of OCGs}
 
-\begin{note}
-  Each link created by the following macros are placed in an
-  \code+\hbox+. Therefore, it can not extend over several lines.
-\end{note}
-
-\DescribeMacro{\switchOCG}%
-The \code+\switchOCG+ macro turns its second argument into a clickable
+\DescribeMacro{\switchocg}%
+The \code+\switchocg+ macro turns its second argument into a clickable
 link that toggles the visibility status of all listed OCGs (by their
 reference) in its first argument: if an OCG was visible, it becomes
 invisible, and conversely, if an OCG was invisible, it becomes visible.
@@ -170,11 +182,11 @@ visibility status of OCGs whose references are \emph{ocg1} and
 \emph{ocg2}:
 
 \begin{lstlisting}[style=TeXcode]
-  \switchOCG{ocg1 ocg2}{toggle}
+  \switchocg{ocg1 ocg2}{toggle}
 \end{lstlisting}
 
-\DescribeMacro{\showOCG}%
-The \code+\showOCG+ macro turns its second argument into a clickable
+\DescribeMacro{\showocg}%
+The \code+\showocg+ macro turns its second argument into a clickable
 link that make visible all OCGs whose references are listed in its first
 argument: an invisible OCG becomes visible and an OCG already visible
 remains visible.
@@ -183,11 +195,11 @@ The following code creates the link \emph{show} which makes visible the
 OCGs whoses references are \emph{ocg1} and \emph{ocg2}:
 
 \begin{lstlisting}[style=TeXcode]
-  \showOCG{ocg1 ocg2}{show}
+  \showocg{ocg1 ocg2}{show}
 \end{lstlisting}
 
-\DescribeMacro{\hideOCG}%
-The \code+\hideOCG+ macro turns its second argument into a clickable
+\DescribeMacro{\hideocg}%
+The \code+\hideocg+ macro turns its second argument into a clickable
 link that make invisible all OCGs whose references are listed in its
 first argument: a visible OCG becomes invisible and an OCG already
 invisible remains invisible.
@@ -195,11 +207,11 @@ invisible remains invisible.
 The following code creates the link \emph{hide} which makes invisible
 the OCGs whoses references are \emph{ocg1} and \emph{ocg2}:
 \begin{lstlisting}[style=TeXcode]
-  \hideOCG{ocg1 ocg2}{hide}
+  \hideocg{ocg1 ocg2}{hide}
 \end{lstlisting}
 
-\DescribeMacro{\actionsOCG}%
-The \code+\actionsOCG+ macro transforms its fourth argument in a
+\DescribeMacro{\actionsocg}%
+The \code+\actionsocg+ macro transforms its fourth argument in a
 clickable link. Its three first arguments are lists of references of
 OCGs. The first list contains references of OCGs which visibility status
 is to be toggled. The second list contains references of OCGs to be set
@@ -210,7 +222,7 @@ visibility status of the OCG named \emph{ocg1}, to make visible the OCG
 named \emph{ocg3}, and to make invisible OCG named \emph{ocg2}:
 
 \begin{lstlisting}[style=TeXcode]
-  \actionsOCG{ocg1}{ocg3}{ocg2}{actions}
+  \actionsocg{ocg1}{ocg3}{ocg2}{actions}
 \end{lstlisting}
 
 \subsection{Usage with \TikZ{}}
@@ -227,41 +239,48 @@ add the following lines in your preamble:
 
 \begin{list}{}
 \item
-\noindent\style+/tikz/switch OCG+\argument{=\{\emph{<OCGs list>}\}}
+\noindent\style+/tikz/switch ocg+\argument{=\{\emph{<OCGs list>}\}}
 
 This style transforms the path or the current node in a link acting as
-if it was produced by the macro \code+\switchOCG+ (the visibility status
+if it was produced by the macro \code+\switchocg+ (the visibility status
 of referenced OCGs is reversed).
 
-\noindent\style+/tikz/show OCG+\argument{=\{\emph{<OCGs list>}\}}
+\noindent\style+/tikz/show ocg+\argument{=\{\emph{<OCGs list>}\}}
 
 This style transforms the path or the current node in a link acting as
-if it was produced by the macro \code+\showOCG+ (the referenced OCGs are
+if it was produced by the macro \code+\showocg+ (the referenced OCGs are
 made visible).
 
-\noindent\style+/tikz/hide OCG+\argument{=\{\emph{<OCGs list>}\}}
+\noindent\style+/tikz/hide ocg+\argument{=\{\emph{<OCGs list>}\}}
 
 This style transforms the path or the current node in a link acting as
-if it was produced by the macro \code+\hideOCG+ (the referenced OCGs are
+if it was produced by the macro \code+\hideocg+ (the referenced OCGs are
 made invisible).
 
-\noindent\style+/tikz/actions OCG+\argument{=\{\emph{<OCGs
+\noindent\style+/tikz/actions ocg+\argument{=\{\emph{<OCGs
     list>}\}\{\emph{<OCGs list>}\}\{\emph{<OCGs list>}\}}
 
 This style transforms the path or the current node in a link acting as
-if it is produced by the macro \code+\actionsOCG+ (the visibility status
+if it is produced by the macro \code+\actionsocg+ (the visibility status
 of OCGs of the first list is reversed, the OCGs in the second list are
 made visible and those of the third list are made invisible).
 
-\noindent\style+/tikz/switch OCG with mark+\argument{=\{\emph{<basename>}\}\{\emph{<OCGs list>}\}}
+\noindent\style+/tikz/switch ocg with mark on+\argument{=\{\emph{<ocg reference>}\}\{\emph{<OCGs list>}\}}
 
-This style transforms the path or the current node in a link acting as
-if it is produced by the macro \code+\switchOCG+ (the visibility status
+\noindent\style+/tikz/switch ocg with mark off+\argument{=\{\emph{<ocg reference>>}\}\{\emph{<OCGs list>}\}}
+
+These styles transform the path or the current node in a link acting as
+if it is produced by the macro \code+\switchocg+ (the visibility status
 of referenced OCGs in the list is reversed).
 
 A mark (currently a simple cross) is drawn over the current path or node
-in an OCG whose reference is \code+checkbox@basename+. The visibility
-status of this new OCG will be reversed as those of the entire list.
+in an OCG whose reference is \texttt{\emph{ocg reference}}. The
+visibility status of this OCG will be reversed as those of the entire
+list.
+
+If the OCG whose reference is \texttt{\emph{ocg reference}} does not
+exist, it is created with an empty name and its initial visibility state
+is true with \code+on+ and false with \code+off+.
 \end{list}
 
 \begin{note}
@@ -289,8 +308,8 @@ package \code+ocgx+ with \TikZ{} (and \code+beamer+).
 \section{Development}
 This package is still experimental. It is released on CTAN. You can
 recover the latest version on \url{https://github.com/polgab/ocgx}. Any
-help to participate in its development is welcome. Do not hesitate to
-contact the maintener (\url{paul.gaborit@gmail.com}).
+help to participate in its development is welcome: contact the
+maintainer (\url{paul.gaborit@gmail.com}).
 
 \end{document}
 
