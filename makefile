@@ -28,8 +28,9 @@ ctan-archive:
 	cp doc/ocgx-manual-en.tex examples/demo-ocgx.tex \
            doc/ocgx-example-1.tex \
 	   ctan-archive/ocgx.tds/source/latex/ocgx
+	cd ctan-archive/ocgx.tds; \
+	   $(ZIP) ../ocgx.tds.zip .;
 	cd ctan-archive; \
-	   $(ZIP) ocgx.tds.zip ocgx.tds; \
 	   $(ZIP) ocgx.zip ocgx.tds.zip ocgx
 
 .PHONY : FORCE_MAKE ctan-archive
