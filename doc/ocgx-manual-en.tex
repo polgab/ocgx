@@ -6,7 +6,7 @@
 % 2. under the GNU Public License.
 
 \documentclass[a4paper]{ltxdoc}
-\usepackage[vmargin=2cm,hmargin=3.5cm]{geometry}
+\usepackage[vmargin=2cm,hmargin=3cm]{geometry}
 \usepackage[latin1]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
@@ -25,16 +25,18 @@
   stringstyle=\ttfamily\color{green!50!black},
   showspaces=false,
   showstringspaces=false,
-  backgroundcolor=\color{cyan!10},
+  backgroundcolor=\color{blue!10},
   fontadjust=true,
   aboveskip=1ex,
   belowskip=1ex,
   emphstyle=\color{blue}\bfseries,
   keepspaces=true,
   flexiblecolumns=true,
-  emph={switchOCG,showOCG,hideOCG,actionsOCG,usetikzlibrary}
+  emph={switchocg,showocg,hideocg,actionsocg,usetikzlibrary,node}
 }
-\newenvironment{prog}[1]{\vspace{1ex}--- \texttt{\emph{#1}} ---}{}
+\makeatletter
+\newenvironment{prog}[1]{\vspace{1ex}--- \texttt{\emph{#1}} ---\nobreak\@afterheading}{}
+\makeatother
 \newcommand{\TeXexample}[3][]{
   \ifthenelse{\equal{#1}{}}{\begin{prog}{#2}}{\begin{prog}{#2 (#1)}}
   \lstinputlisting[style=TeXcode,aboveskip=0ex,#3]{#2}
@@ -45,11 +47,13 @@
 \usepackage[colorlinks]{hyperref}
 \usepackage[english]{babel}
 \usepackage[babel]{microtype}
-\usepackage{parskip}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{.5\baselineskip plus .5\baselineskip minus .2\baselineskip}
 \usepackage{tikz}
 \usetikzlibrary{shadows}
 \usepackage[all]{nowidow}
 \usepackage{ocgx}
+\usepackage{filecontents}
 
 \newcounter{mynotes}
 \newenvironment{note}{%
@@ -80,6 +84,7 @@
 
 \newverbcommand\code{\color{red}}{}
 \newverbcommand\style{\hspace{-2em}\color{red}}{}
+\newcommand\defaultvalue[1]{\hfill(#1)}
 \newcommand\argument[1]{\textcolor{black}{\ttfamily #1}}
 \newcommand\TikZ{Ti\emph{k}Z}
 
@@ -102,15 +107,32 @@ these layers can be displayed or not. Links can enable or disable the
 display of OCGs.
 
 The \code+ocgx+ package does not use Javascript embedded in the PDF
-document to enable or disable OCGs. Thus, it is usable with several PDF
-readers (to date, it has been successfully tested with \emph{Acrobat
-  Reader}, \emph{Foxit Reader}, and \emph{Evince}).
+document to enable (to show) or disable (to hide) OCGs.
+
+\begin{note}
+  OCGs are usable with several PDF readers (to date, it has been
+  successfully tested with \emph{Acrobat Reader}, \emph{Foxit Reader},
+  and \emph{Evince}). The management of OGCs by \emph{Evince} is not yet
+  fully debugged: it still sometimes crash!
+\end{note}
 
 \section{Usage}
 
 Here is a simple example.
 
-\TeXexample{ocgx-example-1.tex}{}
+\begin{filecontents*}{ocgx-example-1}
+\documentclass{article}
+\usepackage{ocgx}
+\begin{document}
+\begin{ocg}{OCG 1}{ocg1}{1}
+  first example.
+\end{ocg}
+
+\switchocg{ocg1}{Button.}
+\end{document}
+\end{filecontents*}
+
+\TeXexample{ocgx-example-1}{}
 
 This document creates an OCG called \emph{ocg1} containing the text
 ``\emph{first example.}''  which is visible. You can show or hide this
@@ -126,6 +148,16 @@ OCG by clicking the link ``\emph{Button.}''.
   \url{http://www.texample.net/weblog/2008/nov/02/creating-pdf-layers/}.
 \end{note}
 
+The following code creates an OCG named \emph{OCG name} with
+\emph{refocg} as internal reference. The content of this OCG is
+``\emph{content...}''. This OCG is visible (the third argument is 1).
+
+\begin{filecontents*}{ocgx-example-2}
+\begin{ocg}{OCG name}{refocg}{1}
+  content...
+\end{ocg}
+\end{filecontents*}
+\TeXexample{ocgx-example-2}{}
 
 \DescribeEnv{ocg}%
 The \code+ocg+ environment (provided by the package \code+ocg+) creates
@@ -135,16 +167,6 @@ name used to reference this OCG. The third argument is a flag that
 indicates whether the OCG should be visible or not (1 for visible, 0 for
 invisible). The content of the environment (any \TeX material) is added
 into the OCG.
-
-The following code creates an OCG named \emph{OCG name} with
-\emph{refocg} as internal reference. The content of this OCG is
-``\emph{content...}''. This OCG is visible (the third argument is 1).
-
-\begin{lstlisting}[style=TeXcode]
-  \begin{ocg}{OCG name}{refocg}{1}
-    content...
-  \end{ocg}
-\end{lstlisting}
 
 \begin{note}
   The same reference can be used with several \code+ocg+ environments (not
@@ -182,7 +204,7 @@ visibility status of OCGs whose references are \emph{ocg1} and
 \emph{ocg2}:
 
 \begin{lstlisting}[style=TeXcode]
-  \switchocg{ocg1 ocg2}{toggle}
+\switchocg{ocg1 ocg2}{toggle}
 \end{lstlisting}
 
 \DescribeMacro{\showocg}%
@@ -195,7 +217,7 @@ The following code creates the link \emph{show} which makes visible the
 OCGs whoses references are \emph{ocg1} and \emph{ocg2}:
 
 \begin{lstlisting}[style=TeXcode]
-  \showocg{ocg1 ocg2}{show}
+\showocg{ocg1 ocg2}{show}
 \end{lstlisting}
 
 \DescribeMacro{\hideocg}%
@@ -206,8 +228,9 @@ invisible remains invisible.
 
 The following code creates the link \emph{hide} which makes invisible
 the OCGs whoses references are \emph{ocg1} and \emph{ocg2}:
+
 \begin{lstlisting}[style=TeXcode]
-  \hideocg{ocg1 ocg2}{hide}
+\hideocg{ocg1 ocg2}{hide}
 \end{lstlisting}
 
 \DescribeMacro{\actionsocg}%
@@ -222,72 +245,138 @@ visibility status of the OCG named \emph{ocg1}, to make visible the OCG
 named \emph{ocg3}, and to make invisible OCG named \emph{ocg2}:
 
 \begin{lstlisting}[style=TeXcode]
-  \actionsocg{ocg1}{ocg3}{ocg2}{actions}
+\actionsocg{ocg1}{ocg3}{ocg2}{actions}
 \end{lstlisting}
 
 \subsection{Usage with \TikZ{}}
 
 You can use the \code+ocgx+ package with \TikZ{}. The package provides a
-\TikZ{} library offering five specific styles to transform a path
-(\code+\path+ or \code+\node+) in a clickable link. To use it, simply
-add the following lines in your preamble:
+\TikZ{} library offering some specific styles to add material to OCGs,
+or to transform a path (\code+\path+ or \code+\node+) in a clickable
+link. To use it, simply add the following lines in your preamble:
 
-\begin{lstlisting}[style=TeXcode]
-  \usepackage{tikz}
-  \usetikzlibrary{ocgx}
-\end{lstlisting}
+\begin{filecontents*}{ocgx-tikz-preamble}
+\usepackage{tikz}
+\usetikzlibrary{ocgx}
+\end{filecontents*}
+\TeXexample{ocgx-tikz-preamble}{}
+
+\subsubsection*{How to add \TikZ{} scopes into OCGs}
 
 \begin{list}{}
 \item
+
+  \noindent\style+/tikz/ocg+\argument{=\{\emph{<ocg options>}\}}
+  
+  The \code+ocg+ family is used to specify the options used to add a
+  scope into an OCG.
+  
+  \begin{list}{}
+  \item
+    
+    \noindent\style+/tikz/ocg/ref+\argument{=\emph{<refname>}}\defaultvalue{no
+    default}
+    
+    This option add the current scope to the OCG referenced by
+    \texttt{refname}. If this OCG does not exist, it is created with
+    \texttt{name} and visibility \texttt{status} specified by the
+    two options below.
+
+    \noindent\style+/tikz/ocg/name+\argument{=\emph{<name>}}\defaultvalue{no
+    default, initially empty}
+    
+    It is the \texttt{\emph{name}} of the OCG as it appears in the PDF
+    viewer. If the OCG is already created, this option is useless.
+    
+    \noindent\style+/tikz/ocg/status+\argument{=\emph{<visibility>}}\defaultvalue{no
+      default, initially \texttt{visible}}
+    
+    Specify the initial visibility state of the OCG. Permissible values
+    are \texttt{visible}, and \texttt{invisible}. If the OCG is already
+    created, this option is useless.
+    
+  \end{list}
+
+  \begin{note}
+    If you prefer, you can also use the \code+ogc+ environment in a
+    \code+tikzpicture+. The \code+pgfonlayer+ environment is special:
+    inside, you must reuse options below, or use a new \code+ocg+
+    environment.
+  \end{note}
+
+\end{list}  
+
+\subsubsection*{How to transform nodes or paths in clickable link}
+
+\begin{list}{}
+\item
+    
 \noindent\style+/tikz/switch ocg+\argument{=\{\emph{<OCGs list>}\}}
+  
+  This style transforms the current path or the current node in a link acting as
+  if it was produced by the macro \code+\switchocg+ (the visibility
+  status of referenced OCGs is reversed).
+  
+  \noindent\style+/tikz/show ocg+\argument{=\{\emph{<OCGs list>}\}}
+  
+  This style transforms the current path or the current node in a link acting as
+  if it was produced by the macro \code+\showocg+ (the referenced OCGs
+  are made visible).
 
-This style transforms the path or the current node in a link acting as
-if it was produced by the macro \code+\switchocg+ (the visibility status
-of referenced OCGs is reversed).
+  \noindent\style+/tikz/hide ocg+\argument{=\{\emph{<OCGs list>}\}}
 
-\noindent\style+/tikz/show ocg+\argument{=\{\emph{<OCGs list>}\}}
+  This style transforms the current path or the current node in a link acting as
+  if it was produced by the macro \code+\hideocg+ (the referenced OCGs
+  are made invisible).
 
-This style transforms the path or the current node in a link acting as
-if it was produced by the macro \code+\showocg+ (the referenced OCGs are
-made visible).
+  \noindent\style+/tikz/actions ocg+\argument{=\{\emph{<OCGs
+      list>}\}\{\emph{<OCGs list>}\}\{\emph{<OCGs list>}\}}
 
-\noindent\style+/tikz/hide ocg+\argument{=\{\emph{<OCGs list>}\}}
+  This style transforms the current path or the current node in a link acting as
+  if it is produced by the macro \code+\actionsocg+ (the visibility
+  status of OCGs of the first list is reversed, the OCGs in the second
+  list are made visible and those of the third list are made invisible).
 
-This style transforms the path or the current node in a link acting as
-if it was produced by the macro \code+\hideocg+ (the referenced OCGs are
-made invisible).
+  \noindent\style+/tikz/switch ocg with mark on+\argument{=\{\emph{<ocg
+      reference>}\}\{\emph{<OCGs list>}\}}
 
-\noindent\style+/tikz/actions ocg+\argument{=\{\emph{<OCGs
-    list>}\}\{\emph{<OCGs list>}\}\{\emph{<OCGs list>}\}}
+  \noindent\style+/tikz/switch ocg with mark off+\argument{=\{\emph{<ocg
+      reference>>}\}\{\emph{<OCGs list>}\}}
 
-This style transforms the path or the current node in a link acting as
-if it is produced by the macro \code+\actionsocg+ (the visibility status
-of OCGs of the first list is reversed, the OCGs in the second list are
-made visible and those of the third list are made invisible).
+  These styles transform the current path or the current node in a link acting
+  as if it is produced by the macro \code+\switchocg+ (the visibility
+  status of referenced OCGs in the list is reversed).
 
-\noindent\style+/tikz/switch ocg with mark on+\argument{=\{\emph{<ocg reference>}\}\{\emph{<OCGs list>}\}}
+  A mark (currently a simple cross) is drawn over the current path or
+  node in an OCG whose reference is \texttt{\emph{ocg reference}}. The
+  visibility status of this OCG will be reversed as those of the entire
+  list.
 
-\noindent\style+/tikz/switch ocg with mark off+\argument{=\{\emph{<ocg reference>>}\}\{\emph{<OCGs list>}\}}
+  If the OCG whose reference is \texttt{\emph{ocg reference}} does not
+  exist, it is created with an empty name and its initial visibility
+  state is true with \code+on+ and false with \code+off+.
 
-These styles transform the path or the current node in a link acting as
-if it is produced by the macro \code+\switchocg+ (the visibility status
-of referenced OCGs in the list is reversed).
-
-A mark (currently a simple cross) is drawn over the current path or node
-in an OCG whose reference is \texttt{\emph{ocg reference}}. The
-visibility status of this OCG will be reversed as those of the entire
-list.
-
-If the OCG whose reference is \texttt{\emph{ocg reference}} does not
-exist, it is created with an empty name and its initial visibility state
-is true with \code+on+ and false with \code+off+.
 \end{list}
 
 \begin{note}
-  Whatever the shape of the current path or node is, it is its
-  \emph{bounding box} that is used to make the link (the link is always
-  \emph{rectangular} and \emph{horizontal}).
+  Due to limitation of PDF, whatever the shape of the current path or
+  node is, it is its \emph{bounding box} that is used to make the link:
+  the link is always \emph{rectangular} and \emph{horizontal}!
 \end{note}
+
+\subsubsection*{Example with \TikZ{}}
+
+\begin{filecontents*}{ocgx-example-3}
+\begin{tikpicture}
+  \begin{scope}[ocg={name=TikZ example,ref=tikzex,status=visible}
+    \fill[orange] (0,0) circle (1);
+  \end{scope}
+  \node[draw,switch ocg=tikzref] at (2,0) {Switch};
+\end{tikpicture}
+\end{filecontents*}
+\TeXexample{ocgx-example-3}{}
+
+
 
 \section{Examples}
 
@@ -307,7 +396,7 @@ package \code+ocgx+ with \TikZ{} (and \code+beamer+).
 
 \section{Development}
 This package is still experimental. It is released on CTAN. You can
-recover the latest version on \url{https://github.com/polgab/ocgx}. Any
+donwload the latest version from \url{https://github.com/polgab/ocgx}. Any
 help to participate in its development is welcome: contact the
 maintainer (\url{paul.gaborit@gmail.com}).
 
