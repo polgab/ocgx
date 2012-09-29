@@ -1,0 +1,10 @@
+--- /usr/local/texlive/2012/texmf/tex/latex/asymptote/ocg.sty	2009-06-29 02:19:38.000000000 +0200
++++ ocg.sty	2012-09-13 23:24:48.258688364 +0200
+@@ -37,6 +37,7 @@
+       \expandafter\gdef\csname OCG#2\endcsname{#1}%
+       \immediate\pdfobj{<< /Type /OCG /Name (#1) >>}% new ocg
+       \xdef\@ocg@curocg{\the\pdflastobj\space 0 R}% reference to id
++      \expandafter\xdef\csname OCGpdfobj#2\endcsname{\@ocg@curocg}
+       \xdef\@ocg@ocgs{\@ocg@ocgs\space\@ocg@curocg}% list of all OCGs in "first defined" order
+       \ifnum#3=1 %on
+          \xdef\@ocg@ocgson{\@ocg@ocgson\space\@ocg@curocg}% list of all default-on OCGs
