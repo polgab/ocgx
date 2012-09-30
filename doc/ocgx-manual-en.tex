@@ -6,7 +6,7 @@
 % 2. under the GNU Public License.
 
 \documentclass[a4paper]{ltxdoc}
-\usepackage[vmargin=2cm,hmargin=3cm]{geometry}
+\usepackage[vmargin=2cm,hmargin=3.5cm,nohead]{geometry}
 \usepackage[latin1]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
@@ -35,12 +35,14 @@
   emph={switchocg,showocg,hideocg,actionsocg,usetikzlibrary,node}
 }
 \makeatletter
-\newenvironment{prog}[1]{\vspace{1ex}--- \texttt{\emph{#1}} ---\nobreak\@afterheading}{}
+\newenvironment{prog}[1]{\vspace{1ex}--- \texttt{\emph{#1}} ---}{}
 \makeatother
-\newcommand{\TeXexample}[3][]{
-  \ifthenelse{\equal{#1}{}}{\begin{prog}{#2}}{\begin{prog}{#2 (#1)}}
-  \lstinputlisting[style=TeXcode,aboveskip=0ex,#3]{#2}
-  \end{prog}
+\newcommand{\TeXexample}[3][]{%
+  \begin{minipage}{1.0\linewidth}
+    \ifthenelse{\equal{#1}{}}{\begin{prog}{#2}}{\begin{prog}{#2 (#1)}}
+        \lstinputlisting[style=TeXcode,aboveskip=0ex,#3]{#2}
+    \end{prog}
+  \end{minipage}
 }
   
 \usepackage{url}
@@ -48,7 +50,7 @@
 \usepackage[english]{babel}
 \usepackage[babel]{microtype}
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{.5\baselineskip plus .5\baselineskip minus .2\baselineskip}
+\setlength{\parskip}{.4\baselineskip plus .5\baselineskip minus .2\baselineskip}
 \usepackage{tikz}
 \usetikzlibrary{shadows}
 \usepackage[all]{nowidow}
@@ -57,6 +59,7 @@
 
 \newcounter{mynotes}
 \newenvironment{note}{%
+  \vspace{5pt}
   \tikzpicture
   \node[%draw=black,line width=.1pt,
   rounded corners=1em,
@@ -110,9 +113,9 @@ The \code+ocgx+ package does not use Javascript embedded in the PDF
 document to enable (to show) or disable (to hide) OCGs.
 
 \begin{note}
-  OCGs are usable with several PDF readers (to date, it has been
+  OCGs are usable with several PDF readers: to date, it has been
   successfully tested with \emph{Acrobat Reader}, \emph{Foxit Reader},
-  and \emph{Evince}). The management of OGCs by \emph{Evince} is not yet
+  and \emph{Evince}. The management of OGCs by \emph{Evince} is not yet
   fully debugged: it still sometimes crash!
 \end{note}
 
@@ -120,7 +123,7 @@ document to enable (to show) or disable (to hide) OCGs.
 
 Here is a simple example.
 
-\begin{filecontents*}{ocgx-example-1}
+\begin{filecontents*}{ocgx-example-1.tex}
 \documentclass{article}
 \usepackage{ocgx}
 \begin{document}
@@ -132,7 +135,7 @@ Here is a simple example.
 \end{document}
 \end{filecontents*}
 
-\TeXexample{ocgx-example-1}{}
+\TeXexample{ocgx-example-1.tex}{}
 
 This document creates an OCG called \emph{ocg1} containing the text
 ``\emph{first example.}''  which is visible. You can show or hide this
@@ -234,7 +237,7 @@ the OCGs whoses references are \emph{ocg1} and \emph{ocg2}:
 \end{lstlisting}
 
 \DescribeMacro{\actionsocg}%
-The \code+\actionsocg+ macro transforms its fourth argument in a
+The \code+\actionsocg+ macro transforms its fourth argument into a
 clickable link. Its three first arguments are lists of references of
 OCGs. The first list contains references of OCGs which visibility status
 is to be toggled. The second list contains references of OCGs to be set
@@ -252,7 +255,7 @@ named \emph{ocg3}, and to make invisible OCG named \emph{ocg2}:
 
 You can use the \code+ocgx+ package with \TikZ{}. The package provides a
 \TikZ{} library offering some specific styles to add material to OCGs,
-or to transform a path (\code+\path+ or \code+\node+) in a clickable
+or to transform a path (\code+\path+ or \code+\node+) into a clickable
 link. To use it, simply add the following lines in your preamble:
 
 \begin{filecontents*}{ocgx-tikz-preamble}
@@ -306,7 +309,7 @@ link. To use it, simply add the following lines in your preamble:
 
 \end{list}  
 
-\subsubsection*{How to transform nodes or paths in clickable link}
+\subsubsection*{How to transform nodes or paths into clickable links}
 
 \begin{list}{}
 \item
@@ -394,12 +397,16 @@ package \code+ocgx+ with \TikZ{} (and \code+beamer+).
 \item The packages \code+ocg+ and \code+ocgx+ are not compatible with Plain-\TeX{}.
 \end{enumerate}
 
-\section{Development}
+\section{Development and history}
 This package is still experimental. It is released on CTAN. You can
 donwload the latest version from \url{https://github.com/polgab/ocgx}. Any
 help to participate in its development is welcome: contact the
 maintainer (\url{paul.gaborit@gmail.com}).
 
+\paragraph{version 0.3} (2012-09-30) Complete documentation for part
+\emph{Usage with TikZ} and correct TDS archive.
+
+\paragraph{version 0.2} (2012-09-27)  First release on CTAN.
 \end{document}
 
 

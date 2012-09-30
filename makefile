@@ -8,7 +8,7 @@ TARGETS= \
 
 all: $(TARGETS)
 
-ctan-archive:
+ctan-archive: all
 	rm -fr ctan-archive
 	mkdir ctan-archive
 	mkdir ctan-archive/ocgx
