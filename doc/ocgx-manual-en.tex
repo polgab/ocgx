@@ -20,6 +20,7 @@
   fancyvrb=true,
   language=[LaTeX]TeX,
   basicstyle=\ttfamily,
+  upquote=true,
   keywordstyle=\color{blue}\bfseries,
   commentstyle=\color{red!50!black}\itshape,
   stringstyle=\ttfamily\color{green!50!black},
@@ -36,14 +37,27 @@
 }
 \makeatletter
 \newenvironment{prog}[1]{\vspace{1ex}--- \texttt{\emph{#1}} ---}{}
-\makeatother
+\newenvironment{ocgXample}[1]{% name 
+  \gdef\ocgXample@filename{#1}%
+  \@tempswafalse\filec@ntents{#1}%
+}
+{\endfilecontents\aftergroup\showocgXample}
+\newcommand\showocgXample{
+  \minipage{1.0\linewidth}%
+  \prog{\ocgXample@filename}
+  \lstinputlisting[style=TeXcode,aboveskip=0ex]\ocgXample@filename%
+  \endprog
+  \endminipage
+}
+
 \newcommand{\TeXexample}[3][]{%
   \begin{minipage}{1.0\linewidth}
-    \ifthenelse{\equal{#1}{}}{\begin{prog}{#2}}{\begin{prog}{#2 (#1)}}
-        \lstinputlisting[style=TeXcode,aboveskip=0ex,#3]{#2}
+    \ifthenelse{\equal{#1}{}}{\begin{prog}{#2}}{\begin{prog}{#2 (#1)}}%
+        \lstinputlisting[style=TeXcode,aboveskip=0ex,#3]{#2}%
     \end{prog}
-  \end{minipage}
+  \end{minipage}\par
 }
+\makeatother
   
 \usepackage{url}
 \usepackage[colorlinks]{hyperref}
@@ -101,6 +115,10 @@
 \begin{document}
 \maketitle
 
+\tableofcontents
+
+\section*{Abstract}
+
 The \code+ocgx+ package extends and documents the \code+ocg+ package
 (which comes with Asymptote) which allows you to create OCGs
 (\emph{Optional Content Group}) in PDF documents.
@@ -115,15 +133,15 @@ document to enable (to show) or disable (to hide) OCGs.
 \begin{note}
   OCGs are usable with several PDF readers: to date, it has been
   successfully tested with \emph{Acrobat Reader}, \emph{Foxit Reader},
-  and \emph{Evince}. The management of OGCs by \emph{Evince} is not yet
-  fully debugged: it still sometimes crash!
+  \emph{PDF-XChange-Viewer}, and \emph{Evince}. The management of OGCs
+  by \emph{Evince} is not yet fully debugged: it still sometimes crash!
 \end{note}
 
 \section{Usage}
 
 Here is a simple example.
 
-\begin{filecontents*}{ocgx-example-1.tex}
+\begin{ocgXample}{ocgx-example-1.tex}
 \documentclass{article}
 \usepackage{ocgx}
 \begin{document}
@@ -133,9 +151,7 @@ Here is a simple example.
 
 \switchocg{ocg1}{Button.}
 \end{document}
-\end{filecontents*}
-
-\TeXexample{ocgx-example-1.tex}{}
+\end{ocgXample}
 
 This document creates an OCG called \emph{ocg1} containing the text
 ``\emph{first example.}''  which is visible. You can show or hide this
@@ -155,12 +171,11 @@ The following code creates an OCG named \emph{OCG name} with
 \emph{refocg} as internal reference. The content of this OCG is
 ``\emph{content...}''. This OCG is visible (the third argument is 1).
 
-\begin{filecontents*}{ocgx-example-2}
+\begin{ocgXample}{ocgx-example-2}
 \begin{ocg}{OCG name}{refocg}{1}
   content...
 \end{ocg}
-\end{filecontents*}
-\TeXexample{ocgx-example-2}{}
+\end{ocgXample}
 
 \DescribeEnv{ocg}%
 The \code+ocg+ environment (provided by the package \code+ocg+) creates
@@ -258,11 +273,10 @@ You can use the \code+ocgx+ package with \TikZ{}. The package provides a
 or to transform a path (\code+\path+ or \code+\node+) into a clickable
 link. To use it, simply add the following lines in your preamble:
 
-\begin{filecontents*}{ocgx-tikz-preamble}
+\begin{ocgXample}{ocgx-tikz-preamble}
 \usepackage{tikz}
 \usetikzlibrary{ocgx}
-\end{filecontents*}
-\TeXexample{ocgx-tikz-preamble}{}
+\end{ocgXample}
 
 \subsubsection*{How to add \TikZ{} scopes into OCGs}
 
@@ -393,8 +407,9 @@ package \code+ocgx+ with \TikZ{} (and \code+beamer+).
 \item An \code+ocg+ environment spanning across multiple pages are not
   detected and don't work correctly.
 \item The list of OCGs created by \code+ocg+ is seen by viewers as a
-  long flat list. Their possible hierarchy is not displayed.
-\item The packages \code+ocg+ and \code+ocgx+ are not compatible with Plain-\TeX{}.
+  long flat list (no hierarchy allowed by PDF specifications).
+\item The packages \code+ocg+ and \code+ocgx+ are not compatible with
+  Plain-\TeX{}.
 \end{enumerate}
 
 \section{Development and history}
@@ -402,6 +417,9 @@ This package is still experimental. It is released on CTAN. You can
 donwload the latest version from \url{https://github.com/polgab/ocgx}. Any
 help to participate in its development is welcome: contact the
 maintainer (\url{paul.gaborit@gmail.com}).
+
+\paragraph{version 0.4} (2012-11-14) Added dependancy to \texttt{calc}
+TikZ library. Fixed bug: bad lists in \code+\actionsocg+.
 
 \paragraph{version 0.3} (2012-09-30) Complete documentation for part
 \emph{Usage with TikZ} and correct TDS archive.
