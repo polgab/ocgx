@@ -6,15 +6,15 @@
 % 2. under the GNU Public License.
 
 \NeedsTeXFormat{LaTeX2e}[1994/06/01]
-\def\ocgxversion{0.3}
-\ProvidesPackage{ocgx}[2012/09/27 v\ocgxversion{} manage OCG in PDF document]
+\def\ocgxversion{0.4}
+\ProvidesPackage{ocgx}[2012/11/14 v\ocgxversion{} manage OCG in PDF document]
 \RequirePackage{ocg}
 
 %%%% small patch to ocg.sty %%%%
 % called from the aux file
 \def\@ocg@makeknown#1#2#3{% #1: OCG name, #2: OC id, #3: on/off
    \@ifundefined{OCG#2}{%
-      \message{OCG#2}%
+     %\message{OCG#2}%
       \expandafter\gdef\csname OCG#2\endcsname{#1}%
       \immediate\pdfobj{<< /Type /OCG /Name (#1) >>}% new ocg
       \xdef\@ocg@curocg{\the\pdflastobj\space 0 R}% reference to id
@@ -31,7 +31,7 @@
          \@ocg@layersnames\space/OC#2\space\@ocg@curocg% name-to-id mapping
       }%
    }{%
-      \message{OCG#2 reopened}%
+      %\message{OCG#2 reopened}%
       % layer reopened
    }%
 }
