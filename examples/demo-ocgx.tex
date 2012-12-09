@@ -298,7 +298,7 @@
 }
 
 \begin{frame}
-  \frametitle{Microtype demo}
+  \frametitle{Microtype demo (first version without hierarchy)}
 
   \def\sampletext{%
     Margin kerning is the adjustments of the characters at the
@@ -332,6 +332,16 @@
 
   {\centering
     \begin{tikzpicture}
+      \begin{scope}[ocg={name=With Protrusion,ref=protrusion}]        
+      \end{scope}
+      \begin{scope}[ocg={name=Without Protrusion,ref=no-protrusion,status=invisible}]        
+      \end{scope}
+      \begin{scope}[ocg={name=With Expansion,ref=expansion}]        
+      \end{scope}
+      \begin{scope}[ocg={name=With Protrusion,ref=protrusion}]        
+      \end{scope}
+      \begin{scope}[ocg={name=Without Expansion,ref=no-expansion,status=invisible}]        
+      \end{scope}
       \begin{scope}[ocg={name=With Protrusion,ref=protrusion}]
         \microtypesetup{protrusion=true}%
         \begin{scope}[ocg={name=With Expansion,ref=expansion}]
@@ -369,7 +379,81 @@
   \end{tikzpicture} with expansion
   
 \end{frame}
+
+\begin{frame}
+  \frametitle{Microtype demo (second version with hierarchy)}
+
+  \def\sampletext{%
+    Margin kerning is the adjustments of the characters at the
+    margins of a typeset text.  A simplified employment of margin
+    kerning is hanging punctuation. Margin kerning is needed for
+    optical alignment of the margins of a typeset text, because
+    mechanical justification of the margins makes them look rather
+    ragged. Some characters can make a line appear shorter to the
+    human eye than others. Shifting such characters by an
+    appropriate amount into the margins would greatly improve the
+    appearance of a typeset text.%
+  }
+
+  \tikzset{
+    checkbox/.style={
+      draw,circle,line width=.5pt,%
+      minimum size=.5em,top color=white,bottom color=cyan,
+      fill opacity=1,
+      inner sep=0,
+      drop shadow={fill=black,shadow xshift=.5mm,shadow yshift=-.5mm},
+    },
+    sampletext/.style={
+      text width=8cm,align=justify,
+      font=\small,
+      fill=yellow!20,
+      inner xsep=1.5cm,
+      inner ysep=1cm,
+      draw=gray,
+    },
+  }
+
+  {\centering
+    \begin{tikzpicture}
+      \begin{scope}[ocg={name=With Protrusion,ref=pro}]
+        \microtypesetup{protrusion=true}%
+        \begin{scope}[ocg={name=With Expansion,status=visible,ref=pro-exp}]
+          \microtypesetup{expansion=true}%
+          \node[sampletext]{\sampletext\par};%
+        \end{scope}
+        
+        \begin{scope}[ocg={name=Without Expansion,status=invisible,ref=pro-no-exp}]
+          \microtypesetup{expansion=false}%
+          \node[sampletext]{\sampletext\par};%
+        \end{scope}
+      \end{scope}
+      
+      \begin{scope}[ocg={name=Without Protrusion,status=invisible,ref=no-pro}]
+        \microtypesetup{protrusion=false}%
+        \begin{scope}[ocg={name=With Expansion,status=visible,ref=no-pro-exp}]
+          \microtypesetup{expansion=true}%
+          \node[sampletext]{\sampletext\par};%
+        \end{scope}
+        
+        \begin{scope}[ocg={name=Without Expansion,status=invisible,ref=no-pro-no-exp}]
+          \microtypesetup{expansion=false}%
+          \node[sampletext]{\sampletext\par};%
+        \end{scope}
+      \end{scope}
+    \end{tikzpicture}\par
+  }
+
+  Microtype :
+  \begin{tikzpicture}
+    \node[checkbox,switch ocg with mark on={pro}{no-pro}]{};
+  \end{tikzpicture} with protrusion 
+  \begin{tikzpicture}
+    \node[checkbox,switch ocg with mark on={pro-exp}{pro-no-exp no-pro-exp no-pro-no-exp}]{};
+  \end{tikzpicture} with expansion
+  
+\end{frame}
 \end{document}
+
 %%% Local Variables: 
 %%% mode: latex
 %%% TeX-master: t

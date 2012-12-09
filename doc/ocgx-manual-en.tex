@@ -119,9 +119,8 @@
 
 \section*{Abstract}
 
-The \code+ocgx+ package extends and documents the \code+ocg+ package
-(which comes with Asymptote) which allows you to create OCGs
-(\emph{Optional Content Group}) in PDF documents.
+The \code+ocgx+ package extends the \code+ocg-p+ package which allows
+you to create OCGs (\emph{Optional Content Group}) in PDF documents.
 
 Every OCG includes \TeX{} material into a layer of the PDF file. Each of
 these layers can be displayed or not. Links can enable or disable the
@@ -159,14 +158,6 @@ OCG by clicking the link ``\emph{Button.}''.
 
 \subsection{Create OCGs}
 
-\begin{note}
-  The \code+ocg+ package written by Michael \textsc{Ritzert} comes
-  without documentation. In my knowledge, the only documentation for
-  this package is offered (by Kjell Magne Fauske) on the weblog of
-  TeXample.net:
-  \url{http://www.texample.net/weblog/2008/nov/02/creating-pdf-layers/}.
-\end{note}
-
 The following code creates an OCG named \emph{OCG name} with
 \emph{refocg} as internal reference. The content of this OCG is
 ``\emph{content...}''. This OCG is visible (the third argument is 1).
@@ -178,13 +169,13 @@ The following code creates an OCG named \emph{OCG name} with
 \end{ocgXample}
 
 \DescribeEnv{ocg}%
-The \code+ocg+ environment (provided by the package \code+ocg+) creates
-OCGs. It requires three arguments. The first argument is the name of the
-OCG as it appears in the PDF viewer. The second argument is the internal
-name used to reference this OCG. The third argument is a flag that
-indicates whether the OCG should be visible or not (1 for visible, 0 for
-invisible). The content of the environment (any \TeX material) is added
-into the OCG.
+The \code+ocg+ environment (provided by the package \code+ocg-p+)
+creates OCGs. It requires three arguments. The first argument is the
+name of the OCG as it appears in the layer toolbar of the PDF
+viewer. The second argument is the internal name used to reference this
+OCG. The third argument sets the initial visibility of the OCG when the
+document is opened (1 for visible, 0 for invisible). The content of the
+environment (any \TeX material) is added into the OCG.
 
 \begin{note}
   The same reference can be used with several \code+ocg+ environments (not
@@ -193,8 +184,7 @@ into the OCG.
 \end{note}
 
 \begin{note}
-  A reference of an OCG consists of letters (A-Z, a-z), numbers (0-9)
-  and possibly the \code+@+ character.
+  A reference of an OCG consists of letters (A-Z, a-z), numbers (0-9).
 \end{note}
 
 \begin{note}
@@ -406,10 +396,11 @@ package \code+ocgx+ with \TikZ{} (and \code+beamer+).
 \item Links are always horizontal rectangles!
 \item An \code+ocg+ environment spanning across multiple pages are not
   detected and don't work correctly.
-\item The list of OCGs created by \code+ocg+ is seen by viewers as a
-  long flat list (no hierarchy allowed by PDF specifications).
-\item The packages \code+ocg+ and \code+ocgx+ are not compatible with
+\item The packages \code+ocg-p+ and \code+ocgx+ are not compatible with
   Plain-\TeX{}.
+\item While \code+ocg-p+ can be used with \code+pdflatex+ and
+  \code+xelatex+, \code+ocgx+ works only with \code+pdflatex+ (and
+  \code+lualatex+).
 \end{enumerate}
 
 \section{Development and history}
@@ -417,6 +408,10 @@ This package is still experimental. It is released on CTAN. You can
 donwload the latest version from \url{https://github.com/polgab/ocgx}. Any
 help to participate in its development is welcome: contact the
 maintainer (\url{paul.gaborit@gmail.com}).
+
+\paragraph{version 0.5} (2012-12-07) Now, the \code+ocgx+ package uses
+the new \code+ocg-p+ package instead of the \code+ocg+ package : the
+layers can be nested in the layer toolbar of the PDF viewer.
 
 \paragraph{version 0.4} (2012-11-14) Added dependancy to \texttt{calc}
 TikZ library. Fixed bug: bad lists in \code+\actionsocg+.
