@@ -1,4 +1,4 @@
-PDFLATEXMK = latexmk -pdf
+PDFLATEXMK = latexmk -pdf # -pdflatex="xelatex" -f
 ZIP = zip -9 -r
 
 TARGETS= \
