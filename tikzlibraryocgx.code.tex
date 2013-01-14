@@ -6,7 +6,25 @@
 % 2. under the GNU Public License.
 
 \RequirePackage{ocgx}
+\RequirePackage{ifxetex}
 \usetikzlibrary{calc}
+
+
+\ifxetex
+\tikzset{
+  invisiblerule/.style={
+    text opacity=0,inner sep=0,outer sep=0,anchor=center,
+  },
+}
+\def\invisiblerule#1#2{\rule{#1}{#2}}
+\else
+\tikzset{
+  invisiblerule/.style={
+    inner sep=0,outer sep=0,anchor=center,
+  },
+}
+\def\invisiblerule#1#2{\phantom{\rule{#1}{#2}}}
+\fi
 
 \makeatletter
 \tikzset{
@@ -36,8 +54,7 @@
         \p3 = (\x2-\x1,\y2-\y1)
         in
         (path picture bounding box.center)
-        node[inner sep=0pt,anchor=center,outer sep=0pt]
-        {\switchocg{#1}{\phantom{\rule{\x3}{\y3}}}};
+        node[invisiblerule]{\switchocg{#1}{\invisiblerule{\x3}{\y3}}};
       }
     },
   },
@@ -84,8 +101,7 @@
         \p3 = (\x2-\x1,\y2-\y1)
         in
         (path picture bounding box.center)
-        node[inner sep=0pt,anchor=center]
-        {\showocg{#1}{\phantom{\rule{\x3}{\y3}}}};
+        node[invisiblerule]{\showocg{#1}{\invisiblerule{\x3}{\y3}}};
       },
     },
   },
@@ -98,8 +114,7 @@
         \p3 = (\x2-\x1,\y2-\y1)
         in
         (path picture bounding box.center)
-        node[inner sep=0pt,anchor=center]
-        {\hideocg{#1}{\phantom{\rule{\x3}{\y3}}}};
+        node[invisiblerule]{\hideocg{#1}{\invisiblerule{\x3}{\y3}}};
       },
     },
   },
@@ -112,8 +127,7 @@
         \p3 = (\x2-\x1,\y2-\y1)
         in
         (path picture bounding box.center)
-        node[inner sep=0pt,anchor=center]
-        {\actionsocg{#1}{#2}{#3}{\phantom{\rule{\x3}{\y3}}}};
+        node[invisiblerule]{\actionsocg{#1}{#2}{#3}{\invisiblerule{\x3}{\y3}}};
       },
     },
   },
