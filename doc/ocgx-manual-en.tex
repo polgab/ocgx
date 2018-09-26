@@ -374,12 +374,12 @@ link. To use it, simply add the following lines in your preamble:
 \subsubsection*{Example with \TikZ{}}
 
 \begin{filecontents*}{ocgx-example-3}
-\begin{tikpicture}
-  \begin{scope}[ocg={name=TikZ example,ref=tikzex,status=visible}
+\begin{tikzpicture}
+  \begin{scope}[ocg={name=TikZ example,ref=tikzex,status=visible}]
     \fill[orange] (0,0) circle (1);
   \end{scope}
-  \node[draw,switch ocg=tikzref] at (2,0) {Switch};
-\end{tikpicture}
+  \node[draw,switch ocg=tikzex] at (2,0) {Switch};
+\end{tikzpicture}
 \end{filecontents*}
 \TeXexample{ocgx-example-3}{}
 
